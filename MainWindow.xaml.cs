@@ -24,9 +24,70 @@ namespace iNFT {
 
         private readonly Toaster toast = new Toaster();
         public MainWindow() {
-            InitializeComponent();
+            this.InitializeComponent();
             Log.StartLogger();
-            this.MainGrid.Children.Add(toast.GetToast());
+            _ = this.MainGrid.Children.Add(this.toast.GetToast());
+
+            this.InitializeLogonWindow();
+
+            //delete this v
+            this.NFTComboBox.ItemsSource = new string[] { "test", "test2", "test3" };
+        }
+
+        /*=============================Logon Block================================*/
+
+        private void InitializeLogonWindow() {
+            this.FilePathTextBox.Text = this.FileNameTextBox.Text = "";
+            this.FileNameTextBox.Visibility = Visibility.Hidden;
+            this.BrowseButton.Visibility = Visibility.Hidden;
+            this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+            this.TextNFTDisplay.Visibility = Visibility.Hidden;
+            this.NFTComboBox.Visibility = Visibility.Hidden;
+            this.MintButton.Visibility = Visibility.Hidden;
+            this.TransferButton.Visibility = Visibility.Hidden;
+            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
+            this.FilePathTextBox.Visibility = Visibility.Hidden;
+            this.LogoutButton.Visibility = Visibility.Hidden;
+
+
+            Application.Current.MainWindow.Width = 400;
+            Application.Current.MainWindow.MinWidth = 400;
+            Application.Current.MainWindow.MaxWidth = 400;
+            Application.Current.MainWindow.Height = 240;
+            Application.Current.MainWindow.MinHeight = 240;
+            Application.Current.MainWindow.MaxHeight = 240;
+
+            this.UserNamePrivateKeyLabel.Visibility = Visibility.Visible;
+            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Visible;
+            this.UsernamePublicKeyTextBox.Visibility = Visibility.Visible;
+            this.UserNamePublicKeyLabel.Visibility = Visibility.Visible;
+            this.PasswordKeyTextBox.Visibility = Visibility.Visible;
+            this.PasswordKeyLabel.Visibility = Visibility.Visible;
+            this.LoginButton.Visibility = Visibility.Visible;
+
+        }
+
+        private void Login_Click(object sender, RoutedEventArgs e) {
+            //TODO: Check Creds
+            //TODO: store creds
+            this.PasswordKeyTextBox.Password = "";
+            this.UsernamePrivateKeyTextBox.Password = "";
+            this.UsernamePublicKeyTextBox.Text = "";
+            this.InitializeMainWindow();
+        }
+
+        /*=============================Logon Block================================*/
+
+        /*==============================Main Block================================*/
+
+        private void InitializeMainWindow() {
+            this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
+            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
+            this.UsernamePublicKeyTextBox.Visibility = Visibility.Hidden;
+            this.UserNamePublicKeyLabel.Visibility = Visibility.Hidden;
+            this.PasswordKeyTextBox.Visibility = Visibility.Hidden;
+            this.PasswordKeyLabel.Visibility = Visibility.Hidden;
+            this.LoginButton.Visibility = Visibility.Hidden;
 
             this.ImageNFTDisplay.Visibility = Visibility.Hidden;
             this.TextNFTDisplay.Visibility = Visibility.Hidden;
@@ -35,10 +96,21 @@ namespace iNFT {
             this.FilePathTextBox.Visibility = Visibility.Hidden;
             this.CopytoClipboardButton.Visibility = Visibility.Hidden;
 
-            this.NFTComboBox.ItemsSource = new string[] { "test", "test2", "test3" };
+            this.FileNameTextBox.Visibility = Visibility.Visible;
+            this.BrowseButton.Visibility = Visibility.Visible;
+            this.NFTComboBox.Visibility = Visibility.Visible;
+            this.LogoutButton.Visibility = Visibility.Visible;
 
-            //TODO: Populate Combo Box
+            Application.Current.MainWindow.Width = 800;
+            Application.Current.MainWindow.MinWidth = 800;
+            Application.Current.MainWindow.MaxWidth = 800;
+            Application.Current.MainWindow.Height = 450;
+            Application.Current.MainWindow.MinHeight = 450;
+            Application.Current.MainWindow.MaxHeight = 450;
+
+            //TODO: UPDATE: this.NFTComboBox.ItemsSource = new string[] { "test", "test2", "test3" };
         }
+
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog fileName = new OpenFileDialog();
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
@@ -62,7 +134,7 @@ namespace iNFT {
         }
 
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if(this.NFTComboBox.SelectedIndex == -1 /*TODO: UPDATE: && IsInBlockchain(this.NFTComboBox.SelectedItem)*/) {
+            if(this.NFTComboBox.SelectedIndex == -1 /*TODO: UPDATE: && !IsInBlockchain(this.NFTComboBox.SelectedItem)*/) {
                 this.FilePathTextBox.Text = "";
                 this.FilePathTextBox.Visibility = Visibility.Hidden;
                 this.CopytoClipboardButton.Visibility = Visibility.Hidden;
@@ -99,36 +171,44 @@ namespace iNFT {
         }
 
         private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
-            if (this.FileNameTextBox.Text.Length > 0) {
-                this.MintButton.Visibility = Visibility.Visible;
-            } else {
-                this.MintButton.Visibility = Visibility.Hidden;
-            }
+            this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
-            //TODO: Mints NFT
+            //TODO: UPDATE: if(FileIsValid(this.FileNameTextBox.Text){
+            //if(EthereumMint(this.FileNameTextBox.Text)){
+            //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
+            //}else{
+            //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
+            //}
             //TODO: Combo box updated
-            //TODO: Mint button removed
-            //TODO: Clear Text box
+            this.FileNameTextBox.Text = "";
         }
 
         private void Transfer_Button_Click(object sender, RoutedEventArgs e) {
-            //TODO: Transfer stuff
+            this.FilePathTextBox.Text = "";
+            this.FilePathTextBox.Visibility = Visibility.Hidden;
+            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
+            this.TransferButton.Visibility = Visibility.Hidden;
+            if (false /*TODO: Delete false UPDATE: !IsInBlockchain(this.NFTComboBox.SelectedItem) */) {
+                this.toast.PopToastie("NFT does not exist", ToastColors.ERROR, 5);
+            } else {
+                //TODO: Transfer stuff
+                this.NFTComboBox.SelectedIndex = -1;
+                this.toast.PopToastie("NFT Successfully Transfered", ToastColors.PRIMARY, 5);
+            }
             //TODO: update combo box
-            //TODO: disable Transfer button
-            //TODO: disable clipboard button
-            //TODO: disable path textbox
-            //TODO: deselect combobox
         }
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e) {
             //TODO: Destroy user log info object 
-            //TODO: Remove this form
+            this.InitializeLogonWindow();
         }
 
         private void Copy_to_Clipboard_Click(object sender, RoutedEventArgs e) {
             Clipboard.SetText(this.FilePathTextBox.Text);
         }
+
+        /*==============================Main Block================================*/
     }
 }
