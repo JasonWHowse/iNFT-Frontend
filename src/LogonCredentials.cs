@@ -9,7 +9,7 @@ namespace iNFT.src {
         private string publicKey;
         private string privateKey;
         private string password;
-        public bool allowTransfer = false; 
+        public bool allowTransfer = false;
         public LogonCredentials() {
             this.Active = false;
             this.publicKey = "";
@@ -26,7 +26,9 @@ namespace iNFT.src {
             this.allowTransfer = false;
         }
 
-        public void DestroyToken(){
+        public LogonCredentials(string PublicKey, string Password) : this(PublicKey, "", Password) { }
+
+        public void DestroyToken() {
             this.Active = false;
             this.publicKey = "";
             this.privateKey = "";
@@ -38,7 +40,7 @@ namespace iNFT.src {
             this.allowTransfer = true;
         }
 
-        public void CloseCredentials(){
+        public void CloseCredentials() {
             this.allowTransfer = false;
         }
 

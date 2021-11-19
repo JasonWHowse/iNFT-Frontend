@@ -21,15 +21,15 @@
         <!--=============================Main Window=============================-->
 
         <!--=============================Logon Window============================-->
-        <Label x:Name="UserNamePublicKeyLabel" Content="Public Key"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-160,0,0"/>
-        <Label x:Name="UserNamePrivateKeyLabel" Content="Private Key" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-80,0,0"/>
-        <Label x:Name="PasswordKeyLabel" Content="Password"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,00,0,0"/>
-        <Label x:Name="EnvironmentLabel" Content="Environment"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,80,0,0"/>
-        <TextBox x:Name="UsernamePublicKeyTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-160,0,0"/>
-        <PasswordBox x:Name="UsernamePrivateKeyTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-80,0,0" PasswordChar="*"/>
-        <PasswordBox x:Name="PasswordKeyTextBox"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,0,0,0" PasswordChar="*"/>
-        <ComboBox x:Name="EnvironmentComboBox" Height="30" Width="260" Margin="90,80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" SelectionChanged="EnvironmentChanged"/>
-        <Button x:Name="LoginButton" Height="30" Width="120" Margin="0,160,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Login" Click="Login_Click"/>
+        <Label x:Name="UserNamePublicKeyLabel" Content="Public Key"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-120,0,0"/>
+        <!--<Label x:Name="UserNamePrivateKeyLabel" Content="Private Key" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-80,0,0"/>-->
+        <Label x:Name="PasswordKeyLabel" Content="Password"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-40,0,0"/>
+        <Label x:Name="EnvironmentLabel" Content="Environment"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,40,0,0"/>
+        <TextBox x:Name="UsernamePublicKeyTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-120,0,0"/>
+        <!--<PasswordBox x:Name="UsernamePrivateKeyTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-80,0,0" PasswordChar="*"/>-->
+        <PasswordBox x:Name="PasswordKeyTextBox"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-40,0,0" PasswordChar="*"/>
+        <ComboBox x:Name="EnvironmentComboBox" Height="30" Width="260" Margin="90,40,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" SelectionChanged="EnvironmentChanged"/>
+        <Button x:Name="LoginButton" Height="30" Width="120" Margin="0,120,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Login" Click="Login_Click"/>
         <!--=============================Logon Window============================-->
 
         <!--===========================Transfer Window===========================-->

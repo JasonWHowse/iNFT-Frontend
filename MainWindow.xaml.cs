@@ -59,12 +59,12 @@ namespace iNFT {
             Application.Current.MainWindow.Width = 400;
             Application.Current.MainWindow.MinWidth = 400;
             Application.Current.MainWindow.MaxWidth = 400;
-            Application.Current.MainWindow.Height = 280;
-            Application.Current.MainWindow.MinHeight = 280;
-            Application.Current.MainWindow.MaxHeight = 280;
+            Application.Current.MainWindow.Height = 200;
+            Application.Current.MainWindow.MinHeight = 200;
+            Application.Current.MainWindow.MaxHeight = 200;
 
-            this.UserNamePrivateKeyLabel.Visibility = Visibility.Visible;
-            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Visible;
+            //this.UserNamePrivateKeyLabel.Visibility = Visibility.Visible;
+            //this.UsernamePrivateKeyTextBox.Visibility = Visibility.Visible;
             this.UsernamePublicKeyTextBox.Visibility = Visibility.Visible;
             this.UserNamePublicKeyLabel.Visibility = Visibility.Visible;
             this.PasswordKeyTextBox.Visibility = Visibility.Visible;
@@ -77,7 +77,7 @@ namespace iNFT {
         private void Login_Click(object sender, RoutedEventArgs e) {
             if (true) {//todo: Deletethis.
                 this.PasswordKeyTextBox.Password = "1234pass";
-                this.UsernamePrivateKeyTextBox.Password = "138526a71c4caff6b2243e2bc0cbe620e317163abb16f5c585a3ca923cfeaf42";
+                //this.UsernamePrivateKeyTextBox.Password = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
                 this.UsernamePublicKeyTextBox.Text = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
             }
             this.authenticated = 100;
@@ -89,16 +89,17 @@ namespace iNFT {
                 this.toast.PopToastie("Please Enter a Public Key", ToastColors.ERROR, 2);
                 return;
             }
-            if (this.UsernamePrivateKeyTextBox.Password.Length == 0) {
+/*            if (this.UsernamePrivateKeyTextBox.Password.Length == 0) {
                 this.toast.PopToastie("Please Enter a Private Key", ToastColors.ERROR, 2);
                 return;
-            }
+            }*/
             if (this.PasswordKeyTextBox.Password.Length == 0) {
                 this.toast.PopToastie("Please Enter a Password", ToastColors.ERROR, 2);
                 return;
             }
             try {
-                this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.UsernamePrivateKeyTextBox.Password, this.PasswordKeyTextBox.Password);
+                //this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.UsernamePrivateKeyTextBox.Password, this.PasswordKeyTextBox.Password); 
+                this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.PasswordKeyTextBox.Password);
                 this.creds.OpenCredentials();
                 Task.Run(this.CheckLogin).Wait();
                 while(this.authenticated == 100) {
@@ -114,7 +115,7 @@ namespace iNFT {
                 this.creds.CloseCredentials();
             }
             this.PasswordKeyTextBox.Password = "";
-            this.UsernamePrivateKeyTextBox.Password = "";
+            //this.UsernamePrivateKeyTextBox.Password = "";
             this.UsernamePublicKeyTextBox.Text = "";
             this.InitializeMainWindow();
         }
@@ -143,8 +144,8 @@ namespace iNFT {
         /*==============================Main Block================================*/
 
         private void InitializeMainWindow() {
-            this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
-            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
+            //this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
+            //this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
             this.UsernamePublicKeyTextBox.Visibility = Visibility.Hidden;
             this.UserNamePublicKeyLabel.Visibility = Visibility.Hidden;
             this.PasswordKeyTextBox.Visibility = Visibility.Hidden;
