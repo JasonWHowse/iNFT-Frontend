@@ -44,9 +44,9 @@ namespace iNFT.src {
         public string EnvContractAccount { get; private set; }
 
 
-        public enum Crypto { LOCAL, ROPSTEN, PROD }
+        public enum Crypto { LOCAL, ROPSTEN, Ethereum_Mainnet }
 
-        private Etherium_Interact() {
+        public Etherium_Interact() {
             try {
                 this.localWeb3 = new Web3("HTTP://127.0.0.1:8545");
             } catch (Exception e) {
@@ -84,7 +84,7 @@ namespace iNFT.src {
                     this.EnvAccount = this.testAccount;
                     this.EnvContractAccount = this.testContractAccount;
                     break;
-                case Crypto.PROD:
+                case Crypto.Ethereum_Mainnet:
                     this.envWeb3 = this.prodNet;
                     this.envAbi = this.prodAbi;
                     this.envContractByteCode = this.prodByteCode;
@@ -101,6 +101,10 @@ namespace iNFT.src {
 
         public Contract GetContract(string account) {
             return this.envWeb3.Eth.GetContract(this.envAbi, account);
+        }
+
+        public async Task<bool> CheckUserName(LogonCredentials creds) {
+            return null == await this.envWeb3.Eth.GetBalance.SendRequestAsync(creds.GetPublicKey()) && await this.envWeb3.Personal.UnlockAccount.SendRequestAsync(creds.GetPrivateKey(), creds.GetPassword(), new HexBigInteger(1));
         }
 
         public async Task DeployContract(string ABI, string byteCode) {
@@ -122,7 +126,7 @@ namespace iNFT.src {
         public async Task GetHashFromContract() {
             Contract cont = this.GetContract(EnvContractAccount);
             Function getFunct = cont.GetFunction("get");
-            var output = await getFunct.CallAsync<string>();
+            string output = await getFunct.CallAsync<string>();
             this.MemeHash = output;
         }
 
