@@ -75,6 +75,11 @@ namespace iNFT {
         }
 
         private void Login_Click(object sender, RoutedEventArgs e) {
+            if (true) {//todo: Deletethis.
+                this.PasswordKeyTextBox.Password = "1234pass";
+                this.UsernamePrivateKeyTextBox.Password = "138526a71c4caff6b2243e2bc0cbe620e317163abb16f5c585a3ca923cfeaf42";
+                this.UsernamePublicKeyTextBox.Text = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
+            }
             this.authenticated = 100;
             if (this.EnvironmentComboBox.SelectedIndex == -1) {
                this.toast.PopToastie("Please Select An Environment" , ToastColors.ERROR, 2);
@@ -95,8 +100,8 @@ namespace iNFT {
             try {
                 this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.UsernamePrivateKeyTextBox.Password, this.PasswordKeyTextBox.Password);
                 this.creds.OpenCredentials();
-                _ = Task.Run(this.CheckLogin);
-                while (this.authenticated == 100) {
+                Task.Run(this.CheckLogin).Wait();
+                while(this.authenticated == 100) {
                     Thread.Sleep(500);
                 }
                 if (this.authenticated == 511) {
@@ -115,6 +120,7 @@ namespace iNFT {
         }
 
         private async void CheckLogin() {
+            //this.authenticated = await this.etherium.CheckUserName(this.creds);/*
             if (await this.etherium.CheckUserName(this.creds)) {
                 this.authenticated = 200;
             } else {

@@ -104,7 +104,13 @@ namespace iNFT.src {
         }
 
         public async Task<bool> CheckUserName(LogonCredentials creds) {
-            return null == await this.envWeb3.Eth.GetBalance.SendRequestAsync(creds.GetPublicKey()) && await this.envWeb3.Personal.UnlockAccount.SendRequestAsync(creds.GetPrivateKey(), creds.GetPassword(), new HexBigInteger(1));
+            //return null == await this.envWeb3.Eth.GetBalance.SendRequestAsync(creds.GetPublicKey()) && await this.envWeb3.Personal.UnlockAccount.SendRequestAsync(creds.GetPrivateKey(), creds.GetPassword(), new HexBigInteger(1));
+            if (null == await this.envWeb3.Eth.GetBalance.SendRequestAsync(creds.GetPublicKey())) {
+                if(await this.envWeb3.Personal.UnlockAccount.SendRequestAsync(creds.GetPrivateKey(), creds.GetPassword(), new HexBigInteger(10))) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task DeployContract(string ABI, string byteCode) {
