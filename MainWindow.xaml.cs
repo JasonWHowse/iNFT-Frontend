@@ -37,7 +37,9 @@ namespace iNFT {
             this.InitializeLogonWindow();
 
             //TODOdelete this v
-            this.NFTComboBox.ItemsSource = new string[] { "QmSgiPTvE9XZo6YvSs8Xw9HW311aAxLnz9qGqgZDNFj8xj", "QmZHd1fbAsE4j281P69a9gR8UdoK3G8DsJ2G7oxVQ8osQ3", "QmaNdRRK5rVxBiodg8fcSpiPoZHFJuqw5ackGFTacHbbKa", "QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2" };
+            this.NFTComboBox.ItemsSource = new string[] { "QmSgiPTvE9XZo6YvSs8Xw9HW311aAxLnz9qGqgZDNFj8xj", "QmZHd1fbAsE4j281P69a9gR8UdoK3G8DsJ2G7oxVQ8osQ3", "QmaNdRRK5rVxBiodg8fcSpiPoZHFJuqw5ackGFTacHbbKa", "QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2",
+            "QmSyGCnVeNMQdxWmaV4eTNEfYo3i4xzE5f8mXm1te2hpfZ",
+            "QmSyGCnVeNMQdxWmaV4eTNEfYo3i4xzE5f8mXm1te2pfZ"};
         }
 
         /*=============================Logon Block================================*/
@@ -129,6 +131,7 @@ namespace iNFT {
             this.PasswordKeyTextBox.Password = "";
             //this.UsernamePrivateKeyTextBox.Password = "";
             this.UsernamePublicKeyTextBox.Text = "";
+            Clipboard.SetText(Log.GetFileName());
             this.InitializeMainWindow();
         }
 
@@ -153,9 +156,7 @@ namespace iNFT {
 
         /*==========================Transfer Block================================*/
 
-        private void InitializeTransferWindow() {
-
-        }
+        private void InitializeTransferWindow() {}
 
         /*==========================Transfer Block================================*/
 
@@ -268,14 +269,13 @@ namespace iNFT {
 
                 this.FilePathTextBox.Text = this.filePath.Split("\\")[^1];
 
-                if (IPFS_Interact.Image_File_Types.Contains(this.IPFS.Ext.ToLower())) {
+                if (IPFS_Interact.Image_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
                     this.DisplayImage();
-                }else if (IPFS_Interact.Text_File_Types.Contains(this.IPFS.Ext.ToLower())) {
+                }else if (IPFS_Interact.Text_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
                     this.DisplayText();
                 }
             }
             //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
-
         }
 
         private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
@@ -298,15 +298,43 @@ namespace iNFT {
             }
         }
 
+        private async void PostFileToIPFS() {
+            try {
+                this.IPFS_Hash = await IPFS.SetFileToIPFS(this.filePath);
+            }catch(Exception e) {
+                this.IPFS_Hash = "";
+                Log.ErrorLog(e);
+            }
+        }
+
+        private string IPFS_Hash = "";
+
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
-            //TODO: UPDATE: if(FileIsValid(this.FileNameTextBox.Text){
-            //if(EthereumMint(this.FileNameTextBox.Text)){
-            //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
-            //}else{
-            //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
-            //}
-            //TODO: Combo box updated
-            this.FileNameTextBox.Text = "";
+            this.filePath = this.FileNameTextBox.Text;
+            if (File.Exists(this.FileNameTextBox.Text)) {
+                this.IPFS_Hash = "Waiting";
+                Task.Run(this.PostFileToIPFS).Wait();
+                while (this.IPFS_Hash.Equals("Waiting")) {
+                    Thread.Sleep(500);
+                }
+                if (this.IPFS_Hash.Length != 0) {
+                    this.toast.PopToastie("Success", ToastColors.PRIMARY, 2);
+                    Log.InfoLog(IPFS_Hash);
+                    //TODO: Mint to Etherium
+                } else {
+                    this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
+                }
+                //if(EthereumMint(this.FileNameTextBox.Text)){
+                //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
+                //}else{
+                //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
+                //}
+
+                //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+                this.FileNameTextBox.Text = "";
+            } else {
+                this.toast.PopToastie("No Such File Exists", ToastColors.ERROR, 2);
+            }
         }
         /*
         private void Transfer_Button_Click(object sender, RoutedEventArgs e) {
@@ -325,7 +353,7 @@ namespace iNFT {
         }*/
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e) {
-            //TODO: Destroy user log info object 
+            this.creds.DestroyToken();
             this.InitializeLogonWindow();
         }
 
@@ -334,7 +362,6 @@ namespace iNFT {
         }
 
         private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
- //           this.etherium.SetEnvironment((Crypto)Enum.GetValues(typeof(Crypto)).GetValue(this.EnvironmentComboBox.SelectedIndex));
             this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
         }
 

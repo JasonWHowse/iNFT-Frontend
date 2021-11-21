@@ -20,7 +20,7 @@ namespace iNFT.src {
 
         public static readonly HashSet<string> Image_File_Types = new HashSet<string> { "webp", "jpeg", "png", "gif", "jpg", "pdf" };//todo: update image list
 
-        public static readonly HashSet<string> Text_File_Types = new HashSet<string> { "txt", "html", "xml", "css", "js", "htm" };//todo: text file list
+        public static readonly HashSet<string> Text_File_Types = new HashSet<string> { "txt", "html", "xml", "css", "js", "htm", "json" };//todo: text file list
 
         public IPFS_Interact() {
             this.Ext = this.FileName = "";
@@ -44,7 +44,7 @@ namespace iNFT.src {
             return Image_File_Types.Contains(this.Ext.ToLower()) || Text_File_Types.Contains(this.Ext.ToLower());
         }
 
-        public string GetTypeByPathFromByteCode(string path) {
+        public static string GetTypeByPathFromByteCode(string path) {
             try {
                 byte[] byteFile = File.ReadAllBytes(path);
                 return MimeGuesser.GuessFileType(byteFile).Extension;
@@ -85,7 +85,6 @@ namespace iNFT.src {
             try {
                 string output = (await gateway.FileSystem.AddFileAsync(path)).Id.ToString();
                 return output;
-                //todo: investigate file options and cancellation tokens
             } catch (Exception e) {
                 Log.ErrorLog(e);
                 return "";

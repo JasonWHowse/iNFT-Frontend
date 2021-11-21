@@ -7,7 +7,7 @@ namespace iNFT.src.Logger {
         private static string _fileName;
 
         public static void StartLogger() {//Default path constructor
-            _fileName = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "//log.log";
+            _fileName = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\log.log";
             BeginningOfLog();
         }
 
@@ -28,6 +28,10 @@ namespace iNFT.src.Logger {
                 fs.WriteLine("New Log Started: " + DateTime.Now.ToString());
                 fs.WriteLine("==============================================");
             }
+        }
+
+        public static string GetFileName() {
+            return _fileName;
         }
 
         public static void InfoLog(string message) {
