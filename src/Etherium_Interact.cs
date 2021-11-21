@@ -120,7 +120,7 @@ namespace iNFT.src {
                 receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
             }
 
-            var contractAddress = receipt.ContractAddress;
+            Log.InfoLog(receipt.ContractAddress);
         }
 
         public async Task GetHashFromContract() {

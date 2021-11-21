@@ -12,7 +12,7 @@ namespace iNFT.src {
         //gateway = https://gateway.ipfs.io/ipfs/QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2
         private readonly IpfsClient defaultGateway = new IpfsClient("https://ipfs.infura.io:5001");
 
-        private IpfsClient gateway;
+        private readonly IpfsClient gateway;
         private readonly string storePath;
         private readonly string storeFileName;
         public string FileName { private set; get; }

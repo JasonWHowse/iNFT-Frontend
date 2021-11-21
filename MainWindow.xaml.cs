@@ -3,21 +3,12 @@ using iNFT.src.Logger;
 using iNFT.src.Toaster;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static iNFT.src.Etherium_Interact;
 using static iNFT.src.Toaster.Toaster;
 
@@ -32,7 +23,7 @@ namespace iNFT {
             Log.StartLogger();
             this.InitializeComponent();
             _ = this.MainGrid.Children.Add(this.toast.GetToast());
-            this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof (Crypto));
+            this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof(Crypto));
 
             this.InitializeLogonWindow();
 
@@ -83,7 +74,7 @@ namespace iNFT {
         //test account = 0xE5Ef0ccc8A65b2F834341F5527B71Ec9CD3F23d7
 
         private void Login_Click(object sender, RoutedEventArgs e) {
-            if (true) {//todo: Deletethis.
+            if (true) {//todo: Delete automatic password and environment assignment
                 this.PasswordKeyTextBox.Password = "1234pass";
                 //this.UsernamePrivateKeyTextBox.Password = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
                 this.UsernamePublicKeyTextBox.Text = "0x2dF96C647E934C98EEeFbBEc79D7703B31e9aCE7";
@@ -91,17 +82,17 @@ namespace iNFT {
             }
             this.authenticated = 100;
             if (this.EnvironmentComboBox.SelectedIndex == -1) {
-               this.toast.PopToastie("Please Select An Environment" , ToastColors.ERROR, 2);
+                this.toast.PopToastie("Please Select An Environment", ToastColors.ERROR, 2);
                 return;
             }
             if (this.UsernamePublicKeyTextBox.Text.Length == 0) {
                 this.toast.PopToastie("Please Enter a Public Key", ToastColors.ERROR, 2);
                 return;
             }
-/*            if (this.UsernamePrivateKeyTextBox.Password.Length == 0) {
-                this.toast.PopToastie("Please Enter a Private Key", ToastColors.ERROR, 2);
-                return;
-            }*/
+            /*            if (this.UsernamePrivateKeyTextBox.Password.Length == 0) {
+                            this.toast.PopToastie("Please Enter a Private Key", ToastColors.ERROR, 2);
+                            return;
+                        }*/
             if (this.PasswordKeyTextBox.Password.Length == 0) {
                 this.toast.PopToastie("Please Enter a Password", ToastColors.ERROR, 2);
                 return;
@@ -111,7 +102,7 @@ namespace iNFT {
                 this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.PasswordKeyTextBox.Password);
                 this.creds.OpenCredentials();
                 Task.Run(this.CheckLogin).Wait();
-                while(this.authenticated == 100) {
+                while (this.authenticated == 100) {
                     Thread.Sleep(500);
                 }
                 if (this.authenticated == 511) {
@@ -123,7 +114,7 @@ namespace iNFT {
                     this.toast.PopToastie(testToastMessage, ToastColors.WARNING, 7);
                     return;
                 }
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 Log.ErrorLog(ex);
             } finally {
                 this.creds.CloseCredentials();
@@ -136,7 +127,7 @@ namespace iNFT {
         }
 
         private async void CheckLogin() {
-            try { 
+            try {
                 if (await this.etherium.CheckUserName(this.creds)) {
                     this.authenticated = 200;
                 } else {
@@ -149,14 +140,32 @@ namespace iNFT {
             }
         }
 
-        private string testToastMessage = ""; //todo: delete
+        private string testToastMessage = ""; //todo: Delete testToastMessage and usages
         private int authenticated = 100;
 
         /*=============================Logon Block================================*/
 
         /*==========================Transfer Block================================*/
 
-        private void InitializeTransferWindow() {}
+        private void InitializeTransferWindow() {//TODO: Implement if time permits
+            throw new NotImplementedException();
+        }
+
+        private void Transfer_Button_Click(object sender, RoutedEventArgs e) {
+            throw new NotImplementedException();//TODO: Implement if time permits
+            this.FilePathTextBox.Text = "";
+            this.FilePathTextBox.Visibility = Visibility.Hidden;
+            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
+            //this.TransferButton.Visibility = Visibility.Hidden;
+            if (false /*TODO: Delete false UPDATE: !IsInBlockchain(this.NFTComboBox.SelectedItem)*/ ) {
+                this.toast.PopToastie("NFT does not exist", ToastColors.ERROR, 5);
+            } else {
+                //aTODO: Transfer stuff
+                this.NFTComboBox.SelectedIndex = -1;
+                this.toast.PopToastie("NFT Successfully Transfered", ToastColors.PRIMARY, 5);
+            }
+            //aTODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+        }
 
         /*==========================Transfer Block================================*/
 
@@ -192,7 +201,7 @@ namespace iNFT {
             Application.Current.MainWindow.MinHeight = 450;
             Application.Current.MainWindow.MaxHeight = 450;
 
-            //TODO: UPDATE: this.NFTComboBox.ItemsSource = new string[] { "test", "test2", "test3" };
+            //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
@@ -229,12 +238,12 @@ namespace iNFT {
 
         private async void SetFileName() {
             try {
-                if(await this.IPFS.GetIPFSFile(this.filePath)) {
+                if (await this.IPFS.GetIPFSFile(this.filePath)) {
                     this.filePath = IPFS.FileName;
                 } else {
                     this.filePath = "false";
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 this.filePath = "false";
                 Log.ErrorLog(e);
             }
@@ -254,7 +263,7 @@ namespace iNFT {
                 this.IPFS.DeleteFile(filePath);
                 this.filePath = this.NFTComboBox.SelectedItem.ToString();
                 Task.Run(this.SetFileName).Wait();
-                while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) { 
+                while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {
                     Thread.Sleep(500);
                 }
 
@@ -271,7 +280,7 @@ namespace iNFT {
 
                 if (IPFS_Interact.Image_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
                     this.DisplayImage();
-                }else if (IPFS_Interact.Text_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
+                } else if (IPFS_Interact.Text_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
                     this.DisplayText();
                 }
             }
@@ -285,7 +294,7 @@ namespace iNFT {
                 if (IPFS_Interact.Image_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayImage();
-                }else if (IPFS_Interact.Text_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                } else if (IPFS_Interact.Text_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayText();
                 } else {
@@ -301,7 +310,7 @@ namespace iNFT {
         private async void PostFileToIPFS() {
             try {
                 this.IPFS_Hash = await IPFS.SetFileToIPFS(this.filePath);
-            }catch(Exception e) {
+            } catch (Exception e) {
                 this.IPFS_Hash = "";
                 Log.ErrorLog(e);
             }
@@ -321,6 +330,11 @@ namespace iNFT {
                     this.toast.PopToastie("Success", ToastColors.PRIMARY, 2);
                     Log.InfoLog(IPFS_Hash);
                     //TODO: Mint to Etherium
+                    //if(EthereumMint(this.FileNameTextBox.Text)){
+                    //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
+                    //}else{
+                    //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
+                    //}
                 } else {
                     this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
                 }
@@ -336,21 +350,6 @@ namespace iNFT {
                 this.toast.PopToastie("No Such File Exists", ToastColors.ERROR, 2);
             }
         }
-        /*
-        private void Transfer_Button_Click(object sender, RoutedEventArgs e) {
-            this.FilePathTextBox.Text = "";
-            this.FilePathTextBox.Visibility = Visibility.Hidden;
-            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
-            //this.TransferButton.Visibility = Visibility.Hidden;
-            if (false /*TODO: Delete false UPDATE: !IsInBlockchain(this.NFTComboBox.SelectedItem) ) {
-                this.toast.PopToastie("NFT does not exist", ToastColors.ERROR, 5);
-            } else {
-                //TODO: Transfer stuff
-                this.NFTComboBox.SelectedIndex = -1;
-                this.toast.PopToastie("NFT Successfully Transfered", ToastColors.PRIMARY, 5);
-            }
-            //TODO: update combo box
-        }*/
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e) {
             this.creds.DestroyToken();
