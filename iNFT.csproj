@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="contracts\" />
+    <Folder Include="build\contracts\" />
     <Folder Include="src\Views\" />
     <Folder Include="test\" />
   </ItemGroup>

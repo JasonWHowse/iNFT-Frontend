@@ -4,14 +4,12 @@ pragma solidity ^0.8;
 
 // implements the ERC721 standard
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 // keeps track of the number of tokens issued
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
-contract BasicNFT is ERC721URIStorage, Ownable   {
+contract BasicNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -30,8 +28,7 @@ contract BasicNFT is ERC721URIStorage, Ownable   {
 
         uint256 newItemId = _tokenIds.current();
         _mint(receiver, newItemId);
-        //_token(newItemId, tokenURI);
-        _setTokenURI(newItemId, tokenURI);
+        _token(newItemId, tokenURI);
 
         // returns the id for the newly created token
         return newItemId;

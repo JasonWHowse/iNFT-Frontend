@@ -27,6 +27,7 @@ namespace iNFT {
         private readonly Toaster toast = new Toaster();
         private LogonCredentials creds = new LogonCredentials();
         private readonly Etherium_Interact etherium = new Etherium_Interact();
+        private readonly IPFS_Interact IPFS = new IPFS_Interact();
         public MainWindow() {
             Log.StartLogger();
             this.InitializeComponent();
@@ -36,7 +37,7 @@ namespace iNFT {
             this.InitializeLogonWindow();
 
             //TODOdelete this v
-            this.NFTComboBox.ItemsSource = new string[] { "test", "test2", "test3" };
+            this.NFTComboBox.ItemsSource = new string[] { "QmSgiPTvE9XZo6YvSs8Xw9HW311aAxLnz9qGqgZDNFj8xj", "QmZHd1fbAsE4j281P69a9gR8UdoK3G8DsJ2G7oxVQ8osQ3", "QmaNdRRK5rVxBiodg8fcSpiPoZHFJuqw5ackGFTacHbbKa", "QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2" };
         }
 
         /*=============================Logon Block================================*/
@@ -72,13 +73,19 @@ namespace iNFT {
             this.LoginButton.Visibility = Visibility.Visible;
             this.EnvironmentComboBox.Visibility = Visibility.Visible;
             this.EnvironmentLabel.Visibility = Visibility.Visible;
+
+            this.NFTComboBox.SelectedIndex = -1;
         }
+
+
+        //test account = 0xE5Ef0ccc8A65b2F834341F5527B71Ec9CD3F23d7
 
         private void Login_Click(object sender, RoutedEventArgs e) {
             if (true) {//todo: Deletethis.
                 this.PasswordKeyTextBox.Password = "1234pass";
                 //this.UsernamePrivateKeyTextBox.Password = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
-                this.UsernamePublicKeyTextBox.Text = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
+                this.UsernamePublicKeyTextBox.Text = "0x2dF96C647E934C98EEeFbBEc79D7703B31e9aCE7";
+                this.EnvironmentComboBox.SelectedIndex = 0;
             }
             this.authenticated = 100;
             if (this.EnvironmentComboBox.SelectedIndex == -1) {
@@ -109,6 +116,11 @@ namespace iNFT {
                     this.toast.PopToastie("Authentication Failed", ToastColors.ERROR, 2);
                     return;
                 }
+                if (this.authenticated == 400) {
+                    //this.toast.PopToastie("Connections Failed", ToastColors.ERROR, 2);
+                    this.toast.PopToastie(testToastMessage, ToastColors.WARNING, 7);
+                    return;
+                }
             }catch(Exception ex) {
                 Log.ErrorLog(ex);
             } finally {
@@ -121,14 +133,20 @@ namespace iNFT {
         }
 
         private async void CheckLogin() {
-            //this.authenticated = await this.etherium.CheckUserName(this.creds);/*
-            if (await this.etherium.CheckUserName(this.creds)) {
-                this.authenticated = 200;
-            } else {
-                this.authenticated = 511;
+            try { 
+                if (await this.etherium.CheckUserName(this.creds)) {
+                    this.authenticated = 200;
+                } else {
+                    this.authenticated = 511;
+                }
+            } catch (Exception e) {
+                this.authenticated = 400;
+                Log.ErrorLog(e);
+                testToastMessage = e.Message;
             }
         }
 
+        private string testToastMessage = ""; //todo: delete
         private int authenticated = 100;
 
         /*=============================Logon Block================================*/
@@ -181,12 +199,14 @@ namespace iNFT {
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
         }
 
-        private void DisplayImage(string path) {
+        private void DisplayImage() {
             try {
                 this.ImageNFTDisplay.Visibility = Visibility.Visible;
+                this.TextNFTDisplay.Visibility = Visibility.Hidden;
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
-                bitmap.UriSource = new Uri(path);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new Uri(this.filePath);
                 bitmap.EndInit();
                 this.ImageNFTDisplay.Source = bitmap;
             } catch (Exception exc) {
@@ -194,45 +214,88 @@ namespace iNFT {
             }
         }
 
+        private void DisplayText() {
+            try {
+                this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+                this.TextNFTDisplay.Visibility = Visibility.Visible;
+                this.TextNFTDisplay.Text = File.ReadAllText(this.filePath);
+            } catch (Exception e) {
+                Log.ErrorLog(e);
+            }
+        }
+
+        private string filePath = "";
+
+        private async void SetFileName() {
+            try {
+                if(await this.IPFS.GetIPFSFile(this.filePath)) {
+                    this.filePath = IPFS.FileName;
+                } else {
+                    this.filePath = "false";
+                }
+            }catch(Exception e) {
+                this.filePath = "false";
+                Log.ErrorLog(e);
+            }
+        }
+
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if(this.NFTComboBox.SelectedIndex == -1 /*TODO: UPDATE: && !IsInBlockchain(this.NFTComboBox.SelectedItem)*/) {
-                this.FilePathTextBox.Text = "";
+            if (this.NFTComboBox.SelectedIndex == -1 /*TODO: UPDATE: && !IsInBlockchain(this.NFTComboBox.SelectedItem)*/) {
+                this.filePath = this.FilePathTextBox.Text = "";
                 this.FilePathTextBox.Visibility = Visibility.Hidden;
                 this.CopytoClipboardButton.Visibility = Visibility.Hidden;
-                //this.TransferButton.Visibility = Visibility.Hidden;
-            } else {
-                //TODO: Determine if old downloaded file exists if so delete it
-                this.FilePathTextBox.Visibility = Visibility.Visible;
-                this.CopytoClipboardButton.Visibility = Visibility.Visible;
-                //this.TransferButton.Visibility = Visibility.Visible;
-
                 this.ImageNFTDisplay.Visibility = Visibility.Hidden;
                 this.TextNFTDisplay.Visibility = Visibility.Hidden;
-                //TODO: Delete below
-                this.FilePathTextBox.Text = this.NFTComboBox.SelectedItem.ToString();
-                //TODO: UPDATE: this.FilePathTextBox.Text = Download(EthereumGetToken(this.NFTComboBox.SelectedItem));
+                //this.TransferButton.Visibility = Visibility.Hidden;
+            } else {
+                //this.TransferButton.Visibility = Visibility.Visible;
+                //todo: check if token still exists in users account.
+                this.IPFS.DeleteFile(filePath);
+                this.filePath = this.NFTComboBox.SelectedItem.ToString();
+                Task.Run(this.SetFileName).Wait();
+                while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) { 
+                    Thread.Sleep(500);
+                }
 
-                //TODO: UPDATE: if(file successfully downloaded){
-                //toast.PopToastie("Successfully Downloaded File", ToastColors.Primary, 5);
-                //}else{
-                //toast.PopToastie("Failed to Download File", ToastColors.Error, 5);
-                //}
+                if (this.filePath.Equals("false")) {
+                    this.toast.PopToastie("No File Found", ToastColors.ERROR, 2);
+                    //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+                    return;
+                }
 
-                //TODO: UPDATE: if(FileCanBeDisplayed(this.FilePathTextBox.Text) && FileIsImage(this.FilePathTextBox.Text)){
-                //DisplayImage(this.FilePathTextBox.Text)
-                //}
+                this.FilePathTextBox.Visibility = Visibility.Visible;
+                this.CopytoClipboardButton.Visibility = Visibility.Visible;
 
-                //TODO: UPDATE: else if(FileCanBeDisplayed(this.FilePathTextBox.Text) && FileIsText(This.FilePathTextBox.Text)){ 
-                //this.TextNFTDisplay.Visibility = Visibility.Visible;
-                //this.TextNFTDisplay.Text = GetTextFromFile(this.FilePathTextBox.Text);
-                //}
+                this.FilePathTextBox.Text = this.filePath.Split("\\")[^1];
+
+                if (IPFS_Interact.Image_File_Types.Contains(this.IPFS.Ext.ToLower())) {
+                    this.DisplayImage();
+                }else if (IPFS_Interact.Text_File_Types.Contains(this.IPFS.Ext.ToLower())) {
+                    this.DisplayText();
+                }
             }
             //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
 
         }
 
         private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
+            this.NFTComboBox.SelectedIndex = -1;
             this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
+            if (File.Exists(this.FileNameTextBox.Text)) {
+                if (IPFS_Interact.Image_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                    this.filePath = this.FileNameTextBox.Text;
+                    this.DisplayImage();
+                }else if (IPFS_Interact.Text_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                    this.filePath = this.FileNameTextBox.Text;
+                    this.DisplayText();
+                } else {
+                    this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+                    this.TextNFTDisplay.Visibility = Visibility.Hidden;
+                }
+            } else {
+                this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+                this.TextNFTDisplay.Visibility = Visibility.Hidden;
+            }
         }
 
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
@@ -267,7 +330,7 @@ namespace iNFT {
         }
 
         private void Copy_to_Clipboard_Click(object sender, RoutedEventArgs e) {
-            Clipboard.SetText(this.FilePathTextBox.Text);
+            Clipboard.SetText(this.filePath);
         }
 
         private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {

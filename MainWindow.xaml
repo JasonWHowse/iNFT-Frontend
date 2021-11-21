@@ -11,7 +11,7 @@
         <TextBox HorizontalAlignment="Center" Height="20" Margin="0,-360,0,0" TextWrapping="NoWrap" VerticalAlignment="Center" Width="440" x:Name="FileNameTextBox" TextChanged="FileNameTextBox_TextChanged"/>
         <Button x:Name="BrowseButton" Content="Browse" HorizontalAlignment="Center" Margin="600,-360,0,0" VerticalAlignment="Center" Click="BrowseButton_Click"  Width="120" Height="20"/>
         <Image x:Name="ImageNFTDisplay" Height="310 " Width="720" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,60,0,0"/>
-        <TextBlock x:Name="TextNFTDisplay" Background="AliceBlue" HorizontalAlignment="Center" Margin="0,60,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="310" Width="720"/>
+        <TextBox x:Name="TextNFTDisplay" Background="AliceBlue" HorizontalAlignment="Center" Margin="0,60,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="310" Width="720" IsReadOnly="True"/>
         <ComboBox x:Name="NFTComboBox" HorizontalAlignment="Center" Margin="600,-300,0,0" VerticalAlignment="Center"  Width="120" Height="20" SelectionChanged="NFTComboBox_SelectionChanged"/>
         <Button x:Name="MintButton" Content="Mint Button" HorizontalAlignment="Center" Margin="0,-300,0,0" VerticalAlignment="Center" Click="Mint_Button_Click"  Width="120" Height="20"/>
         <!--<Button x:Name="TransferButton" Content="Transfer Button" HorizontalAlignment="Center" Margin="320,-300,0,0" VerticalAlignment="Center" Click="Transfer_Button_Click"  Width="120" Height="20"/>-->
