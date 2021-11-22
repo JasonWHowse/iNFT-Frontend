@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using static iNFT.src.Etherium_Interact;
+using static iNFT.src.Ethereum_Interact;
 using static iNFT.src.Toaster.Toaster;
 
 namespace iNFT {
@@ -17,13 +17,21 @@ namespace iNFT {
 
         private readonly Toaster toast = new Toaster();
         private LogonCredentials creds = new LogonCredentials();
-        private readonly Etherium_Interact etherium = new Etherium_Interact();
+        private readonly Ethereum_Interact etherium = new Ethereum_Interact();
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
         public MainWindow() {
             Log.StartLogger();
             this.InitializeComponent();
             _ = this.MainGrid.Children.Add(this.toast.GetToast());
             this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof(Crypto));
+
+            //todo: delete below
+
+            this.EnvironmentComboBox.SelectedIndex = 01;
+
+            //Task.Run(this.etherium.deletethis2contractDeploy);
+
+            //todo: delete below
 
             this.InitializeLogonWindow();
 
@@ -111,7 +119,7 @@ namespace iNFT {
                 }
                 if (this.authenticated == 400) {
                     //this.toast.PopToastie("Connections Failed", ToastColors.ERROR, 2);
-                    this.toast.PopToastie(testToastMessage, ToastColors.WARNING, 7);
+                    this.toast.PopToastie(testToastMessage, ToastColors.WARNING, 2);
                     return;
                 }
             } catch (Exception ex) {

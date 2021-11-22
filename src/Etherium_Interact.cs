@@ -2,14 +2,17 @@
 using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
+using Nethereum.Web3.Accounts.Managed;
 using System;
+using System.IO;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace iNFT.src {
-    class Etherium_Interact {
+    class Ethereum_Interact {
 
         public string MemeHash { get; private set; }
 
@@ -23,6 +26,10 @@ namespace iNFT.src {
         private readonly string localByteCode = "";
         private readonly string testByteCode = "";
         private readonly string prodByteCode = "";
+
+        private readonly static string localAddress = "HTTP://127.0.0.1:8545";
+        private readonly static string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
+        private readonly static string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
 
         private readonly string testAccount = "0xd0fdc799d8125AAb9992e4c7470efB873d1d57dB";
         private readonly string testContractAccount = "0x4a1171207E34b11d002B64332D0c7F7D4ED86AEa";
@@ -38,6 +45,7 @@ namespace iNFT.src {
         private readonly Web3 prodNet;
 
         private Web3 envWeb3;
+        private string envAddress;
         private string envAbi;
         private string envContractByteCode;
         public string EnvAccount { get; private set; }
@@ -46,25 +54,25 @@ namespace iNFT.src {
 
         public enum Crypto { LOCAL, ROPSTEN, Ethereum_Mainnet }
 
-        public Etherium_Interact() {
+        public Ethereum_Interact() {
             try {
-                this.localWeb3 = new Web3("HTTP://127.0.0.1:8545");
+                this.localWeb3 = new Web3(testNetAddress);
             } catch (Exception e) {
                 Log.ErrorLog(e);
             }
             try {
-                this.testNet = new Web3("https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75");
+                this.testNet = new Web3(testNetAddress);
             } catch (Exception e) {
                 Log.ErrorLog(e);
             }
             try {
-                this.prodNet = null;
+                this.prodNet = new Web3(prodNetAddress);
             } catch (Exception e) {
                 Log.ErrorLog(e);
             }
         }
 
-        public Etherium_Interact(Crypto env) : this() {
+        public Ethereum_Interact(Crypto env) : this() {
             this.SetEnvironment(env);
         }
 
@@ -76,6 +84,7 @@ namespace iNFT.src {
                     this.envContractByteCode = this.localByteCode;
                     this.EnvAccount = this.localAccount;
                     this.EnvContractAccount = this.localContractAccount;
+                    this.envAddress = localAddress;
                     break;
                 case Crypto.ROPSTEN:
                     this.envWeb3 = this.testNet;
@@ -104,16 +113,30 @@ namespace iNFT.src {
         }
 
         public async Task<bool> CheckUserName(LogonCredentials creds) {
-            return await this.envWeb3.Personal.UnlockAccount.SendRequestAsync(creds.GetPublicKey(), creds.GetPassword(), new HexBigInteger(10));
+            return true;// await this.envWeb3.Personal.UnlockAccount.SendRequestAsync(creds.GetPublicKey(), creds.GetPassword(), new HexBigInteger(10));
         }
 
+        public async void deletethis2contractDeploy() { //todo: deletethis
+            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            try {
+                //envWeb3 = new Web3(new Account("272a956ed83288cd665ce55283a780ecbaf0eaa264529664355b0fdfe88e9abf"), envAddress);
+                envWeb3 = new Web3(localAddress);
+                await DeployContract(Contract_Details.API, Contract_Details.ByteCode);
+            }catch(Exception e) {
+                Log.ErrorLog(e);
+            }
+        }
+
+
+
         public async Task DeployContract(string ABI, string byteCode) {
-            string senderAddress = EnvContractAccount;
+            string senderAddress = "0x18b528231536146e4648f37A89005B51b26B505B";// EnvContractAccount;
             string password = "1234pass";
             Web3 web3 = envWeb3;
             bool unlockAccountResult = await web3.Personal.UnlockAccount.SendRequestAsync(senderAddress, password, new HexBigInteger(120));
             Assert.True(unlockAccountResult);
-            var transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, senderAddress);
+            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, senderAddress, new HexBigInteger(new BigInteger(6721975)));
             var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
             while (receipt == null) {
                 Thread.Sleep(5000);
@@ -144,10 +167,5 @@ namespace iNFT.src {
                 Log.ErrorLog(e);
             }
         }
-
-        private string localPrivateKey = "138526a71c4caff6b2243e2bc0cbe620e317163abb16f5c585a3ca923cfeaf42";
-        private string DefaultmemeHash = "QmaNdRRK5rVxBiodg8fcSpiPoZHFJuqw5ackGFTacHbbKa";
-        private string primaryDefaultHash = "QmZHd1fbAsE4j281P69a9gR8UdoK3G8DsJ2G7oxVQ8osQ3";
-        private string atfmeme = "QmSgiPTvE9XZo6YvSs8Xw9HW311aAxLnz9qGqgZDNFj8xj";
     }
 }

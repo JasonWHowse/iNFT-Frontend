@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Nethereum.Web3;
-
-namespace iNFT.src {
+﻿namespace iNFT.src {
     class LogonCredentials {
         public bool Active { private set; get; }
         private string publicKey;

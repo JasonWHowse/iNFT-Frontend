@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Folder Include="build\contracts\" />
-    <Folder Include="src\Views\" />
+    <Folder Include="contracts\" />
     <Folder Include="test\" />
   </ItemGroup>
 

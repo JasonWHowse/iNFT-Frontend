@@ -4,7 +4,6 @@ using Ipfs.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace iNFT.src {
@@ -18,7 +17,7 @@ namespace iNFT.src {
         public string FileName { private set; get; }
         public string Ext { private set; get; }
 
-        public static readonly HashSet<string> Image_File_Types = new HashSet<string> { "webp", "jpeg", "png", "gif", "jpg", "pdf" };//todo: update image list
+        public static readonly HashSet<string> Image_File_Types = new HashSet<string> { "webp", "jpeg", "png", "gif", "jpg" };//todo: update image list
 
         public static readonly HashSet<string> Text_File_Types = new HashSet<string> { "txt", "html", "xml", "css", "js", "htm", "json" };//todo: text file list
 
