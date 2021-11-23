@@ -336,7 +336,7 @@ namespace iNFT {
                 }
                 if (this.IPFS_Hash.Length != 0) {
                     this.toast.PopToastie("Success", ToastColors.PRIMARY, 2);
-                    Log.InfoLog(IPFS_Hash);
+                    Log.InfoLog("https://gateway.ipfs.io/ipfs/" + IPFS_Hash);
                     //TODO: Mint to Etherium
                     //if(EthereumMint(this.FileNameTextBox.Text)){
                     //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
