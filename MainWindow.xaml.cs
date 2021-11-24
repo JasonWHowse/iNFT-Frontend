@@ -373,5 +373,9 @@ namespace iNFT {
         }
 
         /*==============================Main Block================================*/
+
+        private void deployButton(object s, RoutedEventArgs e) {
+            Task.Run(this.etherium.deletethis2contractDeploy);
+        }
     }
 }

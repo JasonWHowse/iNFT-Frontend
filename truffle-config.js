@@ -7,6 +7,8 @@ module.exports = {
             gas: 5000000
         }
     },
+    contracts_directory: './contracts/',
+    contracts_build_directory: './build/contracts/',
     compilers: {
         solc: {
             version: "^0.8.0",

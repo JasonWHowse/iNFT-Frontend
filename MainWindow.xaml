@@ -34,5 +34,7 @@
 
         <!--===========================Transfer Window===========================-->
         <!--===========================Transfer Window===========================-->
+        <Button x:Name="Deploy" Height="30" Width="120" Margin="-280,120,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Deploy" Click="deployButton"/>
+        
     </Grid>
 </Window>

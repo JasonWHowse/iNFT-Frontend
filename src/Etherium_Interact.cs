@@ -1,6 +1,7 @@
 ﻿using iNFT.src.Logger;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
+using Nethereum.Signer;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Nethereum.Web3.Accounts.Managed;
@@ -121,22 +122,21 @@ namespace iNFT.src {
 
             try {
                 //envWeb3 = new Web3(new Account("272a956ed83288cd665ce55283a780ecbaf0eaa264529664355b0fdfe88e9abf"), envAddress);
-                envWeb3 = new Web3(localAddress);
-                await DeployContract(Contract_Details.API, Contract_Details.ByteCode);
-            }catch(Exception e) {
+                await DeployContract(Contract_Details.iNFT_API, Contract_Details.iNFT_ByteCode);
+            } catch (Exception e) {
                 Log.ErrorLog(e);
             }
         }
 
-
-
         public async Task DeployContract(string ABI, string byteCode) {
-            string senderAddress = "0x18b528231536146e4648f37A89005B51b26B505B";// EnvContractAccount;
-            string password = "1234pass";
-            Web3 web3 = envWeb3;
-            bool unlockAccountResult = await web3.Personal.UnlockAccount.SendRequestAsync(senderAddress, password, new HexBigInteger(120));
-            Assert.True(unlockAccountResult);
-            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, senderAddress, new HexBigInteger(new BigInteger(6721975)));
+            BigInteger ChainID = new BigInteger(5777);
+            Chain chain = Chain.Private;
+            Account account = new Account("071dd5f9e20415ddcb6fbf662c28fe99f5760a56c54b9319ca83015a40f6e496", ChainID);
+            Web3 web3 = new Web3(account, localAddress);
+            web3.TransactionManager.UseLegacyAsDefault = true;
+            string fromAddress = web3.TransactionManager?.Account?.Address;
+            Log.InfoLog(account.Address+" = " + (await this.envWeb3.Eth.GetBalance.SendRequestAsync(account.Address)).Value.ToString());
+            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, fromAddress, new HexBigInteger(new BigInteger(6721975)));
             var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
             while (receipt == null) {
                 Thread.Sleep(5000);
