@@ -1,13 +1,17 @@
-﻿using iNFT.src.Logger;
+﻿using iNFT.src.helper_functions;
+using iNFT.src.Logger;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Signer;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Nethereum.Web3.Accounts.Managed;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Numerics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -119,31 +123,77 @@ namespace iNFT.src {
 
         public async void deletethis2contractDeploy() { //todo: deletethis
             var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
             try {
-                //envWeb3 = new Web3(new Account("272a956ed83288cd665ce55283a780ecbaf0eaa264529664355b0fdfe88e9abf"), envAddress);
-                await DeployContract(Contract_Details.iNFT_API, Contract_Details.iNFT_ByteCode);
+                string[] files = Directory.GetFiles(pathName);
+                foreach (string abiFile in files) {
+                    try {
+                        TransactionHash = "";
+                        ContAddress = "";
+                        JObject json = Helpers.GetJsonObject(abiFile);
+                        bool? test = await DeployContract(json["abi"].ToString(), (string)json["bytecode"]);
+                        while (test == null) {
+                            Thread.Sleep(5000);
+                        }
+                        if (TransactionHash.Length != 0) {
+                            JObject networks = (JObject)json["networks"];
+                            networks.AddFirst(new JProperty("5777", JObject.Parse("{}")));
+                            JObject networks5777 = (JObject)networks["5777"];
+                            networks5777.AddFirst(new JProperty("events", JObject.Parse("{}")));
+                            networks5777.Property("events").AddAfterSelf(new JProperty("links", JObject.Parse("{}")));
+                            networks5777.Property("links").AddAfterSelf(new JProperty("address", ContAddress));
+                            networks5777.Property("address").AddAfterSelf(new JProperty("transactionHash", TransactionHash));
+                            using (StreamWriter fs = File.CreateText(pathLocation + abiFile.Split("\\")[^1])) {
+                                fs.WriteLine(json.ToString());
+                            }
+                            Log.InfoLog("Successfully deployed " + (string)json["contractName"]);
+                        } else {
+                            Log.WarningLog("Failed to deploy" + (string)json["contractName"]);
+                        }
+
+                    } catch (Exception e) {
+                        Log.ErrorLog(e);
+                    }
+                }
             } catch (Exception e) {
                 Log.ErrorLog(e);
             }
         }
 
-        public async Task DeployContract(string ABI, string byteCode) {
+        private static string TransactionHash = "";
+        private static string ContAddress = "";
+
+        private static string pathLocation = @"D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\build\contracts\";
+        private static string pathName = @"D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\build\contracts\";
+
+        private static string DeploymentPrivateKey = "dcac681d525fa591ec3c9e1193e49efe4bbbafa380f0c7dc4a253f64c44f282f";
+
+        public async Task<bool?> DeployContract(string ABI, string byteCode) {
             BigInteger ChainID = new BigInteger(5777);
-            Chain chain = Chain.Private;
-            Account account = new Account("071dd5f9e20415ddcb6fbf662c28fe99f5760a56c54b9319ca83015a40f6e496", ChainID);
+            Account account = new Account(DeploymentPrivateKey, ChainID);
             Web3 web3 = new Web3(account, localAddress);
+            //Log.InfoLog(account.Address + " = " + (await web3.Eth.GetBalance.SendRequestAsync(account.Address)).Value.ToString());
             web3.TransactionManager.UseLegacyAsDefault = true;
             string fromAddress = web3.TransactionManager?.Account?.Address;
-            Log.InfoLog(account.Address+" = " + (await this.envWeb3.Eth.GetBalance.SendRequestAsync(account.Address)).Value.ToString());
-            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, fromAddress, new HexBigInteger(new BigInteger(6721975)));
+            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, fromAddress, new HexBigInteger(new BigInteger(10000000)));
             var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
             while (receipt == null) {
                 Thread.Sleep(5000);
-                receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
             }
 
-            Log.InfoLog(receipt.ContractAddress);
+            //Log.InfoLog("BlockHash: " + receipt.BlockHash);
+            //Log.InfoLog("BlockNumber: " + receipt.BlockNumber);
+            //Log.InfoLog("ContractAddress: " + receipt.ContractAddress);
+            ContAddress = receipt.ContractAddress;
+            //Log.InfoLog("CumulativeGasUsed: " + receipt.CumulativeGasUsed);
+            //Log.InfoLog("EffectiveGasPrice: " + receipt.EffectiveGasPrice);
+            //Log.InfoLog("GasUsed: " + receipt.GasUsed);
+            //Log.InfoLog("Status: " + receipt.Status);
+            //Log.InfoLog("TransactionHash: " + receipt.TransactionHash);
+            TransactionHash = receipt.TransactionHash;
+            //Log.InfoLog("trancsactionHash: " + transactionHash);
+            //Log.InfoLog("TransactionIndex: " + receipt.TransactionIndex);
+            //Log.InfoLog("Type: " + receipt.Type);
+            return true;
         }
 
         public async Task GetHashFromContract() {
