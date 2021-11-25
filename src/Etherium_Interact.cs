@@ -122,15 +122,52 @@ namespace iNFT.src {
         }
 
         public async void deletethis2contractDeploy() { //todo: deletethis
+            //Log.Toggle_Errors();
             var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            if (false) {
+                BigInteger ChainID = new BigInteger(5777);
+                Account account = new Account(DeploymentPrivateKey, ChainID);
+                Web3 web3 = new Web3(account, localAddress);
+                Log.InfoLog("Balance = " + (await web3.Eth.GetBalance.SendRequestAsync(account.Address)).Value.ToString());
+                return;
+            }
             try {
                 string[] files = Directory.GetFiles(pathName);
-                foreach (string abiFile in files) {
+                JObject[] jsonArray = new JObject[files.Length];
+                Log.InfoLog("filelength = " + files.Length + " jsonarraylength = " + jsonArray.Length);
+                int index = 0;
+                foreach(string file in files) {
+                    jsonArray[index++] = Helpers.GetJsonObject(file);
+                }
+                Log.InfoLog("Start Sleep");
+                Thread.Sleep(1000);
+                Log.InfoLog("1");
+                Thread.Sleep(1000);
+                Log.InfoLog("2");
+                Thread.Sleep(1000);
+                Log.InfoLog("3");
+                Thread.Sleep(1000);
+                Log.InfoLog("4");
+                Thread.Sleep(1000);
+                Log.InfoLog("5");
+                Log.InfoLog("Stop Sleep");
+                //foreach (string abiFile in files) {
+                for (int i = 0; i < jsonArray.Length; i++) { 
+                    if (!((string)jsonArray[i]["contractName"]).ToLower().Contains("nft")) {
+                        continue;
+                    }
                     try {
                         TransactionHash = "";
                         ContAddress = "";
-                        JObject json = Helpers.GetJsonObject(abiFile);
-                        bool? test = await DeployContract(json["abi"].ToString(), (string)json["bytecode"]);
+                        JObject json = jsonArray[i];
+                        bool? test = null;
+                        try {
+                            test = await DeployContract(json["abi"].ToString(), (string)json["bytecode"]);
+                        }catch(Exception e) {
+                            Log.WarningLog("Failed to deploy" + (string)json["contractName"]);
+                            Log.ErrorLog(e);
+                            continue;
+                        }
                         while (test == null) {
                             Thread.Sleep(5000);
                         }
@@ -142,7 +179,7 @@ namespace iNFT.src {
                             networks5777.Property("events").AddAfterSelf(new JProperty("links", JObject.Parse("{}")));
                             networks5777.Property("links").AddAfterSelf(new JProperty("address", ContAddress));
                             networks5777.Property("address").AddAfterSelf(new JProperty("transactionHash", TransactionHash));
-                            using (StreamWriter fs = File.CreateText(pathLocation + abiFile.Split("\\")[^1])) {
+                            using (StreamWriter fs = File.CreateText(pathLocation + (string)json["contractName"] + ".json")) {
                                 fs.WriteLine(json.ToString());
                             }
                             Log.InfoLog("Successfully deployed " + (string)json["contractName"]);
@@ -152,6 +189,7 @@ namespace iNFT.src {
 
                     } catch (Exception e) {
                         Log.ErrorLog(e);
+                        Log.WarningLog("Failed to deploy" + (string)jsonArray[i]["contractName"]);
                     }
                 }
             } catch (Exception e) {
@@ -165,16 +203,18 @@ namespace iNFT.src {
         private static string pathLocation = @"D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\build\contracts\";
         private static string pathName = @"D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\build\contracts\";
 
-        private static string DeploymentPrivateKey = "dcac681d525fa591ec3c9e1193e49efe4bbbafa380f0c7dc4a253f64c44f282f";
+        private static string DeploymentPrivateKey = "2e1df6a9175677f877a5d7b88b409c5cb77d6511a245bb0bb6de92846206eb1f";
 
         public async Task<bool?> DeployContract(string ABI, string byteCode) {
             BigInteger ChainID = new BigInteger(5777);
             Account account = new Account(DeploymentPrivateKey, ChainID);
             Web3 web3 = new Web3(account, localAddress);
-            //Log.InfoLog(account.Address + " = " + (await web3.Eth.GetBalance.SendRequestAsync(account.Address)).Value.ToString());
             web3.TransactionManager.UseLegacyAsDefault = true;
             string fromAddress = web3.TransactionManager?.Account?.Address;
-            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, fromAddress, new HexBigInteger(new BigInteger(10000000)));
+
+            Log.WarningLog("Estimated Gas: " + (await web3.Eth.DeployContract.EstimateGasAsync(ABI, byteCode, fromAddress)).ToString());
+
+            string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, fromAddress, new HexBigInteger(new BigInteger(20000000000)));
             var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
             while (receipt == null) {
                 Thread.Sleep(5000);

@@ -4,6 +4,19 @@ using System.IO;
 namespace iNFT.src.Logger {
     public class Log {
 
+        private static bool reportingErrors = true;
+        private static bool reportingWarnings = true;
+
+        public static bool Toggle_Errors() {
+            reportingErrors = !reportingErrors;
+            return reportingErrors;
+        }
+
+        public static bool Toggle_Warnings() {
+            reportingWarnings = !reportingWarnings;
+            return reportingWarnings;
+        }
+
         private static string _fileName;
 
         public static void StartLogger() {//Default path constructor
@@ -39,11 +52,15 @@ namespace iNFT.src.Logger {
         }
 
         public static void ErrorLog(string message) {
-            LogMessage("ERROR", message);
+            if (reportingErrors) {
+                LogMessage("ERROR", message);
+            }
         }
 
         public static void WarningLog(string message) {
-            LogMessage("WARNING", message);
+            if (reportingWarnings) {
+                LogMessage("WARNING", message);
+            }
         }
 
         private static void LogMessage(string type, string message) {
@@ -63,8 +80,10 @@ namespace iNFT.src.Logger {
         }
 
         internal static void ErrorLog(Exception e) {
-            ErrorLog(e.Message.ToString());
-            ErrorLog(e.StackTrace.ToString());
+            if (reportingErrors) {
+                ErrorLog(e.Message.ToString());
+                ErrorLog(e.StackTrace.ToString());
+            }
         }
     }
 }

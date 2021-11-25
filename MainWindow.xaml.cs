@@ -27,7 +27,7 @@ namespace iNFT {
 
             //todo: delete below
 
-            this.EnvironmentComboBox.SelectedIndex = 01;
+            this.EnvironmentComboBox.SelectedIndex = 0;
 
             //Task.Run(this.etherium.deletethis2contractDeploy);
 
