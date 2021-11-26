@@ -79,11 +79,7 @@ namespace iNFT.src.Toaster {
         }//private void SetColors() {
 
         public void FlipTextBlockFontBold() {
-            if (this.ToastieText.FontWeight.Equals(FontWeights.Normal)) {
-                this.ToastieText.FontWeight = FontWeights.Bold;
-            } else {//if (ToastieText.FontWeight.Equals(FontWeights.Normal)) {
-                this.ToastieText.FontWeight = FontWeights.Normal;
-            }//else {
+            this.ToastieText.FontWeight = this.ToastieText.FontWeight.Equals(FontWeights.Normal) ? FontWeights.Bold : FontWeights.Normal;
         }//public void FlipTextBlockFontBold() {
 
         public void FlipTextBlockFontItalics() {
