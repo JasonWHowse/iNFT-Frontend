@@ -4,6 +4,7 @@ using iNFT.src.Toaster;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,7 +17,6 @@ namespace iNFT {
     public partial class MainWindow : Window {
 
         private readonly Toaster toast = new Toaster();
-        private LogonCredentials creds = new LogonCredentials();
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
         public MainWindow() {
@@ -61,16 +61,12 @@ namespace iNFT {
             Application.Current.MainWindow.Width = 400;
             Application.Current.MainWindow.MinWidth = 400;
             Application.Current.MainWindow.MaxWidth = 400;
-            Application.Current.MainWindow.Height = 200;
-            Application.Current.MainWindow.MinHeight = 200;
-            Application.Current.MainWindow.MaxHeight = 200;
+            Application.Current.MainWindow.Height = 160;
+            Application.Current.MainWindow.MinHeight = 160;
+            Application.Current.MainWindow.MaxHeight = 160;
 
-            //this.UserNamePrivateKeyLabel.Visibility = Visibility.Visible;
-            //this.UsernamePrivateKeyTextBox.Visibility = Visibility.Visible;
-            this.UsernamePublicKeyTextBox.Visibility = Visibility.Visible;
-            this.UserNamePublicKeyLabel.Visibility = Visibility.Visible;
-            this.PasswordKeyTextBox.Visibility = Visibility.Visible;
-            this.PasswordKeyLabel.Visibility = Visibility.Visible;
+            this.UserNamePrivateKeyLabel.Visibility = Visibility.Visible;
+            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Visible;
             this.LoginButton.Visibility = Visibility.Visible;
             this.EnvironmentComboBox.Visibility = Visibility.Visible;
             this.EnvironmentLabel.Visibility = Visibility.Visible;
@@ -78,78 +74,51 @@ namespace iNFT {
             this.NFTComboBox.SelectedIndex = -1;
         }
 
-
-        //test account = 0xE5Ef0ccc8A65b2F834341F5527B71Ec9CD3F23d7
-
         private void Login_Click(object sender, RoutedEventArgs e) {
-            if (true) {//todo: Delete automatic password and environment assignment
-                this.PasswordKeyTextBox.Password = "1234pass";
-                //this.UsernamePrivateKeyTextBox.Password = "0xe0d9F6E40f8c3fd3b121F54d09E069d51Ba64D96";
-                this.UsernamePublicKeyTextBox.Text = "0x2dF96C647E934C98EEeFbBEc79D7703B31e9aCE7";
-                this.EnvironmentComboBox.SelectedIndex = 0;
-            }
-            this.authenticated = 100;
+            this.userBalance = -1M;
             if (this.EnvironmentComboBox.SelectedIndex == -1) {
                 this.toast.PopToastie("Please Select An Environment", ToastColors.ERROR, 2);
                 return;
             }
-            if (this.UsernamePublicKeyTextBox.Text.Length == 0) {
-                this.toast.PopToastie("Please Enter a Public Key", ToastColors.ERROR, 2);
+            if (this.UsernamePrivateKeyTextBox.Password.Length == 0) {
+                this.toast.PopToastie("Please Enter a Private Key", ToastColors.ERROR, 2);
                 return;
             }
-            /*            if (this.UsernamePrivateKeyTextBox.Password.Length == 0) {
-                            this.toast.PopToastie("Please Enter a Private Key", ToastColors.ERROR, 2);
-                            return;
-                        }*/
-            if (this.PasswordKeyTextBox.Password.Length == 0) {
-                this.toast.PopToastie("Please Enter a Password", ToastColors.ERROR, 2);
+            if (!Regex.IsMatch(this.UsernamePrivateKeyTextBox.Password, @"^[0-9a-fA-F]+$")) {
+                this.toast.PopToastie("Invalid Private Key", ToastColors.ERROR, 2);
                 return;
             }
             try {
-                //this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.UsernamePrivateKeyTextBox.Password, this.PasswordKeyTextBox.Password); 
-                this.creds = new LogonCredentials(this.UsernamePublicKeyTextBox.Text, this.PasswordKeyTextBox.Password);
-                this.creds.OpenCredentials();
                 Task.Run(this.CheckLogin).Wait();
-                while (this.authenticated == 100) {
+                while (this.userBalance == -1M) {
                     Thread.Sleep(500);
                 }
-                if (this.authenticated == 511) {
-                    this.toast.PopToastie("Authentication Failed", ToastColors.ERROR, 2);
+                if (this.userBalance == -2M) {
+                    this.toast.PopToastie("Failed To Connect to Environment", ToastColors.ERROR, 2);
+                    this.etherium.Logout();
                     return;
                 }
-                if (this.authenticated == 400) {
-                    //this.toast.PopToastie("Connections Failed", ToastColors.ERROR, 2);
-                    this.toast.PopToastie(testToastMessage, ToastColors.WARNING, 2);
-                    return;
-                }
+                this.toast.PopToastie((this.userBalance == 0M ? "Warning!\r\n" : "") + "Current Balance: " + this.userBalance, this.userBalance == 0M ? ToastColors.WARNING : ToastColors.PRIMARY, 2);
             } catch (Exception ex) {
+                this.toast.PopToastie("Failed To Connect to Environment", ToastColors.ERROR, 2);
                 Log.ErrorLog(ex);
-            } finally {
-                this.creds.CloseCredentials();
+                return;
             }
-            this.PasswordKeyTextBox.Password = "";
-            //this.UsernamePrivateKeyTextBox.Password = "";
-            this.UsernamePublicKeyTextBox.Text = "";
-            Clipboard.SetText(Log.GetFileName());
+            this.UsernamePrivateKeyTextBox.Password = "";
+            Clipboard.SetText(Log.GetFileName());//todo: delete before prod push
             this.InitializeMainWindow();
         }
 
         private async void CheckLogin() {
             try {
-                if (await this.etherium.CheckUserName(this.creds)) {
-                    this.authenticated = 200;
-                } else {
-                    this.authenticated = 511;
-                }
+                this.userBalance = await this.etherium.CheckUserName(this.UsernamePrivateKeyTextBox.Password);
             } catch (Exception e) {
-                this.authenticated = 400;
+                this.userBalance = -2M;
                 Log.ErrorLog(e);
-                testToastMessage = e.Message;
             }
         }
 
-        private string testToastMessage = ""; //todo: Delete testToastMessage and usages
-        private int authenticated = 100;
+        private decimal userBalance = -1M;
 
         /*=============================Logon Block================================*/
 
@@ -165,7 +134,7 @@ namespace iNFT {
             this.FilePathTextBox.Visibility = Visibility.Hidden;
             this.CopytoClipboardButton.Visibility = Visibility.Hidden;
             //this.TransferButton.Visibility = Visibility.Hidden;
-            if (false /*TODO: Delete false UPDATE: !IsInBlockchain(this.NFTComboBox.SelectedItem)*/ ) {
+            if (false /*aTODO: Delete false UPDATE: !IsInBlockchain(this.NFTComboBox.SelectedItem)*/ ) {
                 this.toast.PopToastie("NFT does not exist", ToastColors.ERROR, 5);
             } else {
                 //aTODO: Transfer stuff
@@ -180,12 +149,8 @@ namespace iNFT {
         /*==============================Main Block================================*/
 
         private void InitializeMainWindow() {
-            //this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
-            //this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
-            this.UsernamePublicKeyTextBox.Visibility = Visibility.Hidden;
-            this.UserNamePublicKeyLabel.Visibility = Visibility.Hidden;
-            this.PasswordKeyTextBox.Visibility = Visibility.Hidden;
-            this.PasswordKeyLabel.Visibility = Visibility.Hidden;
+            this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
+            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
             this.LoginButton.Visibility = Visibility.Hidden;
             this.EnvironmentComboBox.Visibility = Visibility.Hidden;
             this.EnvironmentLabel.Visibility = Visibility.Hidden;
@@ -360,7 +325,7 @@ namespace iNFT {
         }
 
         private void Logout_Button_Click(object sender, RoutedEventArgs e) {
-            this.creds.DestroyToken();
+            this.etherium.Logout();
             this.InitializeLogonWindow();
         }
 
@@ -373,9 +338,9 @@ namespace iNFT {
         }
 
         /*==============================Main Block================================*/
-
+        /*uncomment to deploy contracts this is a dev level tool
         private void deployButton(object s, RoutedEventArgs e) {
-            Task.Run(this.etherium.deletethis2contractDeploy);
-        }
+            Task.Run(Deploy_Contract.Contract_Preparation);
+        }*/
     }
 }
