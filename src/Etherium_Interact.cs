@@ -19,15 +19,11 @@ using Xunit;
 namespace iNFT.src {
     class Ethereum_Interact {
 
-        private readonly string localByteCode = "";
-        private readonly string testByteCode = "";
-        private readonly string prodByteCode = "";
-
         private readonly static string localNetAddress = "HTTP://127.0.0.1:8545";
         private readonly static string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
         private readonly static string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
 
-        private readonly string localContractAccount = "0xe659A5B26Ed0F2f3d86b30278e522426c31bfC6B";
+        private readonly string localContractAccount = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
         private readonly string testContractAccount = "";
         private readonly string prodContractAccount = null;
 
@@ -101,8 +97,8 @@ namespace iNFT.src {
             Log.InfoLog("Balance = " + (await this.envWeb3.Eth.GetBalance.SendRequestAsync(account)).Value.ToString());
         }
 
-        public Contract GetContract(string account) {
-            return this.envWeb3.Eth.GetContract(Contract_Details.NFT_API,  account);
+        public Contract GetContract() {
+            return this.envWeb3.Eth.GetContract(Contract_Details.NFT_API, this.EnvContractAccount);
         }
 
         public async Task<decimal> CheckUserName(string privateKey) {
@@ -118,24 +114,27 @@ namespace iNFT.src {
         }
 
         public async Task GetHashFromContract() {
-            Contract cont = this.GetContract(EnvContractAccount);
+            Contract cont = this.GetContract();
             Function getFunct = cont.GetFunction("get");
             string output = await getFunct.CallAsync<string>();
             //this.MemeHash = output;
         }
 
-        public async Task Mint(string hash) {
+        public async Task<bool> Mint(string hash) {
             try {
                 HexBigInteger gas = new HexBigInteger(new BigInteger(400000));
                 HexBigInteger value = new HexBigInteger(new BigInteger(0));
-                Contract cont = this.GetContract(EnvContractAccount);
+                Contract cont = this.GetContract();
                 Function setFunct = cont.GetFunction("mint");
-
-                string transaction = await setFunct.SendTransactionAsync(EnvContractAccount, gas, value, hash);
+                object[] parameters = { this.account.Address, hash };
+                envWeb3.TransactionManager.UseLegacyAsDefault = true;
+                string transaction = await setFunct.SendTransactionAsync(this.account.Address, gas, value, parameters);
 
                 Log.InfoLog(transaction);
+                return true;
             } catch (Exception e) {
                 Log.ErrorLog(e);
+                return false;
             }
         }
     }

@@ -8049,9 +8049,16 @@
     "name": "solc",
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0xb7439107318a36496da7ad9588b2d678b92d38eb",
+      "transactionHash": "0xa47e4f6cdbf270578b4eb953145cb00e68eca098628a37d13a925997de10f8aa"
+    }
+  },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-26T16:20:08.078Z",
+  "updatedAt": "2021-11-26T21:30:36.109Z",
   "devdoc": {
     "details": "Collection of functions related to the address type",
     "kind": "dev",

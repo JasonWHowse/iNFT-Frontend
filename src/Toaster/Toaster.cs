@@ -44,174 +44,174 @@ namespace iNFT.src.Toaster {
         public enum ToastColors { PRIMARY, WARNING, ERROR }
 
         public Toaster() {
-            Toastie.Child = ToastieText;
-            InstatiateBorder();
-            InstatiateTextBlock();
-            SetColors();
+            this.Toastie.Child = this.ToastieText;
+            this.InstatiateBorder();
+            this.InstatiateTextBlock();
+            this.SetColors();
         }//public Toaster() {
 
         private void InstatiateBorder() {
-            SetBorderXName(boarderXName);
-            SetBorderCornerRadius(borderCornerRadius);
-            SetBorderWidth(borderWidth);
-            SetBorderHeight(borderHeight);
-            SetBorderHorizontalAlignment(borderHorizontalAlignment);
-            SetBorderVerticalAlignment(borderVerticalAlignment);
-            SetBorderMargin(borderLeftMargin, borderTopMargin, borderRightMargin, borderBottomMargin);
-            SetBorderThickness(borderThickness);
-            Toastie.Visibility = Visibility.Hidden;
+            this.SetBorderXName(this.boarderXName);
+            this.SetBorderCornerRadius(this.borderCornerRadius);
+            this.SetBorderWidth(this.borderWidth);
+            this.SetBorderHeight(this.borderHeight);
+            this.SetBorderHorizontalAlignment(this.borderHorizontalAlignment);
+            this.SetBorderVerticalAlignment(this.borderVerticalAlignment);
+            this.SetBorderMargin(this.borderLeftMargin, this.borderTopMargin, this.borderRightMargin, this.borderBottomMargin);
+            this.SetBorderThickness(this.borderThickness);
+            this.Toastie.Visibility = Visibility.Hidden;
         }//private void InstatiateBorder() {
 
         private void InstatiateTextBlock() {
-            SetTextBlockXName(textBlockXName);
-            SetTextBlockTextAlignment(textBlockTextAlignment);
-            SetTextBlockMargin(textBlockMargin);
-            SetTextBlockTextWrapping(textBlockTextWrapping);
-            SetTextBlockVerticalAlignment(textBlockVerticalAlignment);
-            SetTextBlockFontSize(textBlockFontSize);
-            SetTextBlockFontFamily(textBlockFontFamily);
+            this.SetTextBlockXName(this.textBlockXName);
+            this.SetTextBlockTextAlignment(this.textBlockTextAlignment);
+            this.SetTextBlockMargin(this.textBlockMargin);
+            this.SetTextBlockTextWrapping(this.textBlockTextWrapping);
+            this.SetTextBlockVerticalAlignment(this.textBlockVerticalAlignment);
+            this.SetTextBlockFontSize(this.textBlockFontSize);
+            this.SetTextBlockFontFamily(this.textBlockFontFamily);
         }//private void InstatiateTextBlock() {
 
         private void SetColors() {
-            SetPrimaryColors(Color.FromArgb(225, 0, 125, 0), Color.FromArgb(225, 0, 255, 0), Color.FromArgb(225, 0, 255, 0));
-            SetWarningColors(Color.FromArgb(225, 125, 125, 0), Color.FromArgb(225, 255, 255, 0), Color.FromArgb(225, 255, 255, 0));
-            SetErrorColors(Color.FromArgb(225, 125, 0, 0), Color.FromArgb(225, 255, 0, 0), Color.FromArgb(225, 255, 0, 0));
+            this.SetPrimaryColors(Color.FromArgb(225, 0, 125, 0), Color.FromArgb(225, 0, 255, 0), Color.FromArgb(225, 0, 255, 0));
+            this.SetWarningColors(Color.FromArgb(225, 125, 125, 0), Color.FromArgb(225, 255, 255, 0), Color.FromArgb(225, 255, 255, 0));
+            this.SetErrorColors(Color.FromArgb(225, 125, 0, 0), Color.FromArgb(225, 255, 0, 0), Color.FromArgb(225, 255, 0, 0));
         }//private void SetColors() {
 
         public void FlipTextBlockFontBold() {
-            if (ToastieText.FontWeight.Equals(FontWeights.Normal)) {
-                ToastieText.FontWeight = FontWeights.Bold;
+            if (this.ToastieText.FontWeight.Equals(FontWeights.Normal)) {
+                this.ToastieText.FontWeight = FontWeights.Bold;
             } else {//if (ToastieText.FontWeight.Equals(FontWeights.Normal)) {
-                ToastieText.FontWeight = FontWeights.Normal;
+                this.ToastieText.FontWeight = FontWeights.Normal;
             }//else {
         }//public void FlipTextBlockFontBold() {
 
         public void FlipTextBlockFontItalics() {
-            if (ToastieText.FontStyle.Equals(FontStyles.Italic)) {
-                ToastieText.FontStyle = FontStyles.Normal;
+            if (this.ToastieText.FontStyle.Equals(FontStyles.Italic)) {
+                this.ToastieText.FontStyle = FontStyles.Normal;
             } else {//if (ToastieText.FontStyle.Equals(FontStyles.Italic)) {
-                ToastieText.FontStyle = FontStyles.Italic;
+                this.ToastieText.FontStyle = FontStyles.Italic;
             }//else {
         }//public void FlipTextBlockFontItalics() {
 
         public Border GetToast() {
-            return Toastie;
+            return this.Toastie;
         }//public Border GetToast() {
 
         public void PopToastie(string message, ToastColors tc, int seconds) {
             switch (tc) {
                 case ToastColors.PRIMARY:
-                    Toastie.Background = new SolidColorBrush(PrimaryBackgroundColor);
-                    Toastie.BorderBrush = new SolidColorBrush(PrimaryBorderColor);
-                    ToastieText.Foreground = new SolidColorBrush(PrimaryFontColor);
+                    this.Toastie.Background = new SolidColorBrush(this.PrimaryBackgroundColor);
+                    this.Toastie.BorderBrush = new SolidColorBrush(this.PrimaryBorderColor);
+                    this.ToastieText.Foreground = new SolidColorBrush(this.PrimaryFontColor);
                     break;
                 case ToastColors.ERROR:
-                    Toastie.Background = new SolidColorBrush(ErrorBackgroundColor);
-                    Toastie.BorderBrush = new SolidColorBrush(ErrorBorderColor);
-                    ToastieText.Foreground = new SolidColorBrush(ErrorFontColor);
+                    this.Toastie.Background = new SolidColorBrush(this.ErrorBackgroundColor);
+                    this.Toastie.BorderBrush = new SolidColorBrush(this.ErrorBorderColor);
+                    this.ToastieText.Foreground = new SolidColorBrush(this.ErrorFontColor);
                     break;
                 case ToastColors.WARNING:
-                    Toastie.Background = new SolidColorBrush(WarningBackgroundColor);
-                    Toastie.BorderBrush = new SolidColorBrush(WarningBorderColor);
-                    ToastieText.Foreground = new SolidColorBrush(WarningFontColor);
+                    this.Toastie.Background = new SolidColorBrush(this.WarningBackgroundColor);
+                    this.Toastie.BorderBrush = new SolidColorBrush(this.WarningBorderColor);
+                    this.ToastieText.Foreground = new SolidColorBrush(this.WarningFontColor);
                     break;
                 default:
-                    Toastie.Background = new SolidColorBrush(Color.FromArgb(225, 255, 255, 255));
-                    Toastie.BorderBrush = new SolidColorBrush(Color.FromArgb(225, 0, 0, 0));
-                    ToastieText.Foreground = new SolidColorBrush(Color.FromArgb(225, 100, 100, 100));
+                    this.Toastie.Background = new SolidColorBrush(Color.FromArgb(225, 255, 255, 255));
+                    this.Toastie.BorderBrush = new SolidColorBrush(Color.FromArgb(225, 0, 0, 0));
+                    this.ToastieText.Foreground = new SolidColorBrush(Color.FromArgb(225, 100, 100, 100));
                     break;
             }//switch (tc) {
-            ToastieText.Text = message;
-            Toastie.Visibility = Visibility.Visible;
-            timer.Interval = TimeSpan.FromSeconds(seconds);
-            timer.Stop();
-            timer.Tick += (s, en) => {
-                Toastie.Visibility = Visibility.Hidden;
-                timer.Stop();
+            this.ToastieText.Text = message;
+            this.Toastie.Visibility = Visibility.Visible;
+            this.timer.Interval = TimeSpan.FromSeconds(seconds);
+            this.timer.Stop();
+            this.timer.Tick += (s, en) => {
+                this.Toastie.Visibility = Visibility.Hidden;
+                this.timer.Stop();
             };
-            timer.Start();
+            this.timer.Start();
         }//public void PopToastie(string message, ToastColors tc, int seconds) {
 
         public void SetBorderCornerRadius(CornerRadius borderCornerRadius) {
-            Toastie.CornerRadius = borderCornerRadius;
+            this.Toastie.CornerRadius = borderCornerRadius;
         }//public void SetBorderCornerRadius(CornerRadius borderCornerRadius) {
 
         public void SetBorderHeight(int borderHeight) {
-            Toastie.Height = borderHeight;
+            this.Toastie.Height = borderHeight;
         }//public void SetBorderHeight(int borderHeight) {
 
         public void SetBorderHorizontalAlignment(HorizontalAlignment borderHorizontalAlignment) {
-            Toastie.HorizontalAlignment = borderHorizontalAlignment;
+            this.Toastie.HorizontalAlignment = borderHorizontalAlignment;
         }//public void SetBorderHorizontalAlignment(HorizontalAlignment borderHorizontalAlignment) {
 
         public void SetBorderMargin(double borderLeftMargin, double borderTopMargin, double borderRightMargin, double borderBottomMargin) {
-            Toastie.Margin = new Thickness(borderLeftMargin, borderTopMargin, borderRightMargin, borderBottomMargin);
+            this.Toastie.Margin = new Thickness(borderLeftMargin, borderTopMargin, borderRightMargin, borderBottomMargin);
         }//public void SetBorderMargin(double borderLeftMargin,double borderTopMargin,double borderRightMargin,double borderBottomMargin) {
 
         public void SetBorderThickness(Thickness borderThickness) {
-            Toastie.BorderThickness = borderThickness;
+            this.Toastie.BorderThickness = borderThickness;
         }//public void SetBorderThickness(Thickness borderThickness) {
 
         public void SetBorderVerticalAlignment(VerticalAlignment borderVerticalAlignment) {
-            Toastie.VerticalAlignment = borderVerticalAlignment;
+            this.Toastie.VerticalAlignment = borderVerticalAlignment;
         }//public void SetBorderVerticalAlignment(VerticalAlignment borderVerticalAlignment) {
 
         public void SetBorderWidth(int borderWidth) {
-            Toastie.Width = borderWidth;
+            this.Toastie.Width = borderWidth;
         }//public void SetBorderWidth(int borderWidth) {
 
         public void SetBorderXName(string boarderXName) {
-            Toastie.Name = boarderXName;
+            this.Toastie.Name = boarderXName;
         }//public void SetBorderXName(string boarderXName) {
 
         public void SetErrorColors(Color backgroundColor, Color boarderColor, Color fontColor) {
-            ErrorBackgroundColor = backgroundColor;
-            ErrorBorderColor = boarderColor;
-            ErrorFontColor = fontColor;
+            this.ErrorBackgroundColor = backgroundColor;
+            this.ErrorBorderColor = boarderColor;
+            this.ErrorFontColor = fontColor;
         }//public void SetErrorColors(Color backgroundColor, Color boarderColor, Color fontColor) {
 
         public void SetPrimaryColors(Color backgroundColor, Color boarderColor, Color fontColor) {
-            PrimaryBackgroundColor = backgroundColor;
-            PrimaryBorderColor = boarderColor;
-            PrimaryFontColor = fontColor;
+            this.PrimaryBackgroundColor = backgroundColor;
+            this.PrimaryBorderColor = boarderColor;
+            this.PrimaryFontColor = fontColor;
         }//public void SetPrimaryColors(Color backgroundColor, Color boarderColor, Color fontColor) {
 
         public void SetTextBlockFontFamily(string textBlockFontFamily) {
-            ToastieText.FontFamily = new FontFamily(textBlockFontFamily);
+            this.ToastieText.FontFamily = new FontFamily(textBlockFontFamily);
         }//public void SetTextBlockFontFamily(string textBlockFontFamily) {
 
         public void SetTextBlockFontSize(double textBlockFontSize) {
-            ToastieText.FontSize = textBlockFontSize;
+            this.ToastieText.FontSize = textBlockFontSize;
         }//public void SetTextBlockFontSize(double textBlockFontSize) {
 
         public void SetTextBlockMargin(Thickness margin) {
-            ToastieText.Margin = margin;
+            this.ToastieText.Margin = margin;
         }//public void SetTextBlockMargin(Thickness margin) {
 
         public void SetTextBlockMargin(double leftMargin, double topMargin, double rightMargin, double bottomMargin) {
-            ToastieText.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
+            this.ToastieText.Margin = new Thickness(leftMargin, topMargin, rightMargin, bottomMargin);
         }//public void SetTextBlockMargin(double leftMargin, double topMargin,double rightMargin, double bottomMargin) {
 
         public void SetTextBlockTextAlignment(TextAlignment textBlockTextAlignment) {
-            ToastieText.TextAlignment = textBlockTextAlignment;
+            this.ToastieText.TextAlignment = textBlockTextAlignment;
         }//public void SetTextBlockTextAlignment(TextAlignment textBlockTextAlignment) {
 
         public void SetTextBlockTextWrapping(TextWrapping TextWrapping) {
-            ToastieText.TextWrapping = TextWrapping;
+            this.ToastieText.TextWrapping = TextWrapping;
         }//public void SetTextBlockTextWrapping(TextWrapping TextWrapping) {
 
         public void SetTextBlockVerticalAlignment(VerticalAlignment textBlockVerticalAlignment) {
-            ToastieText.VerticalAlignment = textBlockVerticalAlignment;
+            this.ToastieText.VerticalAlignment = textBlockVerticalAlignment;
         }//public void SetTextBlockVerticalAlignment(VerticalAlignment textBlockVerticalAlignment) {
 
         public void SetTextBlockXName(string textBlockXName) {
-            ToastieText.Name = textBlockXName;
+            this.ToastieText.Name = textBlockXName;
         }//public void SetTextBlockXName(string textBlockXName) {
 
         public void SetWarningColors(Color backgroundColor, Color boarderColor, Color fontColor) {
-            WarningBackgroundColor = backgroundColor;
-            WarningBorderColor = boarderColor;
-            WarningFontColor = fontColor;
+            this.WarningBackgroundColor = backgroundColor;
+            this.WarningBorderColor = boarderColor;
+            this.WarningFontColor = fontColor;
         }//public void SetWarningColors(Color backgroundColor, Color boarderColor, Color fontColor) {
     }//public class Toaster {
 }//namespace iNFT.src.Toaster {

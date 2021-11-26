@@ -75,7 +75,7 @@ namespace iNFT {
         }
 
         private void Login_Click(object sender, RoutedEventArgs e) {
-            if(this.UsernamePrivateKeyTextBox.Password.Length>1 && this.UsernamePrivateKeyTextBox.Password.ToLower()[1] == 'x') {
+            if (this.UsernamePrivateKeyTextBox.Password.Length > 1 && this.UsernamePrivateKeyTextBox.Password.ToLower()[1] == 'x') {
                 this.UsernamePrivateKeyTextBox.Password = this.UsernamePrivateKeyTextBox.Password.ToLower().Split("x")[1];
             }
             this.userBalance = -1M;
@@ -214,11 +214,7 @@ namespace iNFT {
 
         private async void SetFileName() {
             try {
-                if (await this.IPFS.GetIPFSFile(this.filePath)) {
-                    this.filePath = IPFS.FileName;
-                } else {
-                    this.filePath = "false";
-                }
+                this.filePath = await this.IPFS.GetIPFSFile(this.filePath) ? this.IPFS.FileName : "false";
             } catch (Exception e) {
                 this.filePath = "false";
                 Log.ErrorLog(e);
@@ -236,7 +232,7 @@ namespace iNFT {
             } else {
                 //this.TransferButton.Visibility = Visibility.Visible;
                 //todo: check if token still exists in users account.
-                this.IPFS.DeleteFile(filePath);
+                this.IPFS.DeleteFile(this.filePath);
                 this.filePath = this.NFTComboBox.SelectedItem.ToString();
                 Task.Run(this.SetFileName).Wait();
                 while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {
@@ -285,32 +281,50 @@ namespace iNFT {
 
         private async void PostFileToIPFS() {
             try {
-                this.IPFS_Hash = await IPFS.SetFileToIPFS(this.filePath);
+                this.IPFS_Hash = await this.IPFS.SetFileToIPFS(this.filePath);
             } catch (Exception e) {
                 this.IPFS_Hash = "";
                 Log.ErrorLog(e);
             }
         }
 
+        private async void Mint() {
+            try {
+                this.hasMinted = await this.etherium.Mint(this.IPFS_Hash);
+            } catch (Exception e) {
+                Log.ErrorLog(e);
+                this.hasMinted = false;
+            }
+        }
+
+
+
+        private bool? hasMinted = null;
         private string IPFS_Hash = "";
 
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
+            this.hasMinted = null;
             this.filePath = this.FileNameTextBox.Text;
             if (File.Exists(this.FileNameTextBox.Text)) {
                 this.IPFS_Hash = "Waiting";
-                Task.Run(this.PostFileToIPFS).Wait();
+                //Task.Run(this.PostFileToIPFS).Wait();
+                this.IPFS_Hash = "QmTfchXSZowJqQ9DUzmqhAgNg6mkGHfpFVYY9aqoJTyCv5";//TODO: Delete this line and uncomment the above line
                 while (this.IPFS_Hash.Equals("Waiting")) {
                     Thread.Sleep(500);
                 }
                 if (this.IPFS_Hash.Length != 0) {
-                    this.toast.PopToastie("Success", ToastColors.PRIMARY, 2);
-                    Log.InfoLog("https://gateway.ipfs.io/ipfs/" + IPFS_Hash);
-                    //TODO: Mint to Etherium
-                    //if(EthereumMint(this.FileNameTextBox.Text)){
-                    //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
-                    //}else{
-                    //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
-                    //}
+                    Log.InfoLog("https://gateway.ipfs.io/ipfs/" + this.IPFS_Hash);
+
+                    Task.Run(this.Mint).Wait();
+                    while (this.hasMinted == null) {
+                        Thread.Sleep(500);
+                    }
+
+                    if (this.hasMinted == true) {
+                        this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
+                    } else {
+                        this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
+                    }
                 } else {
                     this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
                 }
@@ -341,9 +355,9 @@ namespace iNFT {
         }
 
         /*==============================Main Block================================*/
-        /*uncomment to deploy contracts this is a dev level tool
+        //uncomment to deploy contracts this is a dev level tool
         private void deployButton(object s, RoutedEventArgs e) {
             Task.Run(Deploy_Contract.Contract_Preparation);
-        }*/
+        }
     }
 }

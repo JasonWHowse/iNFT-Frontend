@@ -496,9 +496,16 @@
     "name": "solc",
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x39d7b1f465c4ea83dc4f11e485198707af32e6cf",
+      "transactionHash": "0x81e7b1c61e924cd8efd86ffb21ce109de5354f2e160f327fafe111a4c93b9c7c"
+    }
+  },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-26T16:20:08.068Z",
+  "updatedAt": "2021-11-26T21:30:36.098Z",
   "devdoc": {
     "details": "Interface for any contract that wants to support safeTransfers from ERC721 asset contracts.",
     "kind": "dev",

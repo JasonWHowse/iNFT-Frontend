@@ -2991,9 +2991,16 @@
     "name": "solc",
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x34fc20e707c3787295c07c93b1f0ec7ff966f49b",
+      "transactionHash": "0x1648b3c9e8fbc6ee9e53b8ddbf3042cb4a0c7089dee5edbc0739dfd87ba1f37c"
+    }
+  },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-26T16:20:08.063Z",
+  "updatedAt": "2021-11-26T21:30:36.094Z",
   "devdoc": {
     "details": "Required interface of an ERC721 compliant contract.",
     "events": {

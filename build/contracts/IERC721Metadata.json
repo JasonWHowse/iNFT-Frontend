@@ -936,9 +936,16 @@
     "name": "solc",
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0x9ad1a4c54e030efde58d52ecc8148a493968a524",
+      "transactionHash": "0xf53bd8f498926e2eed00049cc8beb6218285d3c55965bb275d37688f7fd41265"
+    }
+  },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-26T16:20:08.076Z",
+  "updatedAt": "2021-11-26T21:30:36.106Z",
   "devdoc": {
     "details": "See https://eips.ethereum.org/EIPS/eip-721",
     "kind": "dev",

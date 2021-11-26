@@ -21,13 +21,13 @@ namespace iNFT.src {
             return Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Split("bin")[0];
         }
 
-        private static string pathLocation = GetProjectPath() + @"\build\contracts\";
-        private static string pathName = GetProjectPath() + @"\build\contracts\";
+        private static readonly string pathLocation = GetProjectPath() + @"\build\contracts\";
+        private static readonly string pathName = GetProjectPath() + @"\build\contracts\";
 
-        private static string DeploymentPrivateKey = "2e1df6a9175677f877a5d7b88b409c5cb77d6511a245bb0bb6de92846206eb1f";//this is a local ke not available on prod or test accounts.
+        private static readonly string DeploymentPrivateKey = "3108730f93f6852632793acfe849b846bf7e2ee129a0ad84c932b89ef1f00ef2";//this is a local ke not available on prod or test accounts.
 
-        private readonly static string localAddress = "HTTP://127.0.0.1:8545";
-        private readonly static BigInteger ChainID = new BigInteger(5777);
+        private static readonly string localAddress = "HTTP://127.0.0.1:8545";
+        private static readonly BigInteger ChainID = new BigInteger(5777);
 
         public static async void Contract_Preparation() {
             try {
@@ -52,9 +52,9 @@ namespace iNFT.src {
                 Log.InfoLog("Stop Sleep");
                 //foreach (string abiFile in files) {
                 for (int i = 0; i < jsonArray.Length; i++) {
-                    if (!((string)jsonArray[i]["contractName"]).ToLower().Contains("nft")) {
+                    /*if (!((string)jsonArray[i]["contractName"]).ToLower().Contains("nft")) {
                         continue;
-                    }
+                    }*/
                     try {
                         TransactionHash = "";
                         ContAddress = "";

@@ -315,9 +315,16 @@
     "name": "solc",
     "version": "0.8.10+commit.fc410830.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0xa05884cefdf9e9624234120c2e97dd7aad1e3096",
+      "transactionHash": "0xfc5b060dee4d0a77d9efe00ea5f395f4751cda8a36fc391548dbfce06b80617e"
+    }
+  },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-26T16:20:08.097Z",
+  "updatedAt": "2021-11-26T21:30:36.132Z",
   "devdoc": {
     "details": "Interface of the ERC165 standard, as defined in the https://eips.ethereum.org/EIPS/eip-165[EIP]. Implementers can declare support of contract interfaces, which can then be queried by others ({ERC165Checker}). For an implementation, see {ERC165}.",
     "kind": "dev",
