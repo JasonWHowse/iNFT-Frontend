@@ -75,6 +75,9 @@ namespace iNFT {
         }
 
         private void Login_Click(object sender, RoutedEventArgs e) {
+            if(this.UsernamePrivateKeyTextBox.Password.Length>1 && this.UsernamePrivateKeyTextBox.Password.ToLower()[1] == 'x') {
+                this.UsernamePrivateKeyTextBox.Password = this.UsernamePrivateKeyTextBox.Password.ToLower().Split("x")[1];
+            }
             this.userBalance = -1M;
             if (this.EnvironmentComboBox.SelectedIndex == -1) {
                 this.toast.PopToastie("Please Select An Environment", ToastColors.ERROR, 2);
