@@ -6,6 +6,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="build\contracts\" />
     <Folder Include="contracts\" />
