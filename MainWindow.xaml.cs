@@ -24,15 +24,6 @@ namespace iNFT {
             this.InitializeComponent();
             _ = this.MainGrid.Children.Add(this.toast.GetToast());
             this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof(Crypto));
-
-            //todo: delete below
-
-            this.EnvironmentComboBox.SelectedIndex = 0;
-
-            //Task.Run(this.etherium.deletethis2contractDeploy);
-
-            //todo: delete below
-
             this.InitializeLogonWindow();
 
             //TODOdelete this v
@@ -75,6 +66,10 @@ namespace iNFT {
         }
 
         private void Login_Click(object sender, RoutedEventArgs e) {
+            if (true) { //todo: delte this
+                this.UsernamePrivateKeyTextBox.Password = "7e61a0914ce8b3a0259d361bba78ac6a95582640e86444201876e2795f60cb32";
+                this.EnvironmentComboBox.SelectedIndex = 0;
+            }
             if (this.UsernamePrivateKeyTextBox.Password.Length > 1 && this.UsernamePrivateKeyTextBox.Password.ToLower()[1] == 'x') {
                 this.UsernamePrivateKeyTextBox.Password = this.UsernamePrivateKeyTextBox.Password.ToLower().Split("x")[1];
             }
@@ -328,11 +323,6 @@ namespace iNFT {
                 } else {
                     this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
                 }
-                //if(EthereumMint(this.FileNameTextBox.Text)){
-                //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
-                //}else{
-                //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
-                //}
 
                 //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
                 this.FileNameTextBox.Text = "";
@@ -355,9 +345,17 @@ namespace iNFT {
         }
 
         /*==============================Main Block================================*/
-        //uncomment to deploy contracts this is a dev level tool
-        private void deployButton(object s, RoutedEventArgs e) {
-            Task.Run(Deploy_Contract.Contract_Preparation);
+
+        private void testerButton(object sender, RoutedEventArgs e) {
+            try {
+                Task.Run(etherium.GetHashFromContract).Wait();
+            }catch(Exception ex) {
+                Log.ErrorLog(ex);
+            }
         }
+        //uncomment to deploy contracts this is a dev level tool
+        //private void deployButton(object s, RoutedEventArgs e) {
+        //    Task.Run(Deploy_Contract.Contract_Preparation);
+        //}
     }
 }

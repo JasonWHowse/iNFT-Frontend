@@ -30,8 +30,9 @@
 
         <!--===========================Transfer Window===========================-->
         <!--===========================Transfer Window===========================-->
-        <!-- uncomment for deployments you will need to know what you are doing and manually configure teh Deploy_Contract class before compiling.-->
+        <!-- uncomment for deployments you will need to know what you are doing and manually configure teh Deploy_Contract class before compiling.
         <Button x:Name="Deploy" Height="30" Width="120" Margin="-280,80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Deploy" Click="deployButton"/>
-        <!-- -->
+         -->
+        <Button x:Name="Tester" Height="30" Width="120" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Test" Click="testerButton"/>
     </Grid>
 </Window>

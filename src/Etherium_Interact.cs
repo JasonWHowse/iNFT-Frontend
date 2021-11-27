@@ -1,20 +1,11 @@
-﻿using iNFT.src.helper_functions;
-using iNFT.src.Logger;
+﻿using iNFT.src.Logger;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
-using Nethereum.Signer;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using Nethereum.Web3.Accounts.Managed;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.IO;
 using System.Numerics;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace iNFT.src {
     class Ethereum_Interact {
@@ -27,9 +18,9 @@ namespace iNFT.src {
         private readonly string testContractAccount = "";
         private readonly string prodContractAccount = null;
 
-        private BigInteger localChainID = 5777;
-        private BigInteger testChainID = 3;
-        private BigInteger prodChainID = 1;
+        private readonly BigInteger localChainID = 5777;
+        private readonly BigInteger testChainID = 3;
+        private readonly BigInteger prodChainID = 1;
 
         private readonly Web3 localWeb3;
         private readonly Web3 testNet;
@@ -89,6 +80,8 @@ namespace iNFT.src {
                     this.envAddress = prodNetAddress;
                     this.envChainID = this.prodChainID;
                     break;
+                default:
+                    break;
             }
         }
 
@@ -102,9 +95,8 @@ namespace iNFT.src {
         }
 
         public async Task<decimal> CheckUserName(string privateKey) {
-            this.account = new Account(privateKey, envChainID);
-            this.envWeb3 = new Web3(account, this.envAddress);
-            Log.InfoLog((await this.envWeb3.Eth.GetBalance.SendRequestAsync(this.account.Address)).Value.ToString());
+            this.account = new Account(privateKey, this.envChainID);
+            this.envWeb3 = new Web3(this.account, this.envAddress);
             return Web3.Convert.FromWei(await this.envWeb3.Eth.GetBalance.SendRequestAsync(this.account.Address));
         }
 
@@ -115,9 +107,19 @@ namespace iNFT.src {
 
         public async Task GetHashFromContract() {
             Contract cont = this.GetContract();
-            Function getFunct = cont.GetFunction("get");
-            string output = await getFunct.CallAsync<string>();
-            //this.MemeHash = output;
+            object[] parameters = new object[] { this.account.Address };
+            Function getFunct = cont.GetFunction("balanceOf");
+            string output = (await getFunct.CallAsync<int>(parameters)).ToString();
+            Log.InfoLog(output);
+            getFunct = cont.GetFunction("ownerOf");Log.InfoLog("ln123");
+            parameters = new object[] { new BigInteger(new HexBigInteger("0x9dfa6381a7a4c9d157cb152ba58e07107cc387932249cb4c45a7869014fa4a20")) }; Log.InfoLog("ln124");
+            try {
+                output = (await getFunct.CallAsync<int>(parameters)).ToString();
+                Log.InfoLog(output);
+            }catch(Exception e) {
+                Log.ErrorLog(e);
+                Log.ErrorLog(e.GetType().ToString());
+            }
         }
 
         public async Task<bool> Mint(string hash) {
@@ -127,7 +129,7 @@ namespace iNFT.src {
                 Contract cont = this.GetContract();
                 Function setFunct = cont.GetFunction("mint");
                 object[] parameters = { this.account.Address, hash };
-                envWeb3.TransactionManager.UseLegacyAsDefault = true;
+                this.envWeb3.TransactionManager.UseLegacyAsDefault = true;
                 string transaction = await setFunct.SendTransactionAsync(this.account.Address, gas, value, parameters);
 
                 Log.InfoLog(transaction);
