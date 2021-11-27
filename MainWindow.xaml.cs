@@ -21,6 +21,8 @@ namespace iNFT {
         private readonly Toaster toast = new Toaster();
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
+        private bool? hasMinted = null;
+        private string IPFS_Hash = "";
         public MainWindow() {
             Log.StartLogger();
             this.InitializeComponent();
@@ -91,7 +93,7 @@ namespace iNFT {
                     this.etherium.Logout();
                     return;
                 }
-                this.toast.PopToastie((this.userBalance == 0M ? "Warning!\r\n" : "") + "Current Balance: " + this.userBalance, this.userBalance == 0M ? ToastColors.WARNING : ToastColors.PRIMARY, 2);
+                this.toast.PopToastie((this.userBalance == 0M ? "Warning!\r\n" : "") + "Current Balance: " + this.userBalance, this.userBalance == 0M ? ToastColors.WARNING : ToastColors.PRIMARY, 4);
             } catch (Exception ex) {
                 this.toast.PopToastie("Failed To Connect to Environment", ToastColors.ERROR, 2);
                 Log.ErrorLog(ex);
@@ -244,7 +246,7 @@ namespace iNFT {
             } else {
                 //this.TransferButton.Visibility = Visibility.Visible;
                 this.IPFS.DeleteFile(this.filePath.Split("\\")[^1]);
-                this.filePath = this.NFTComboBox.SelectedItem.ToString();Log.InfoLog(filePath);
+                this.filePath = this.NFTComboBox.SelectedItem.ToString();
                 Task.Run(this.SetFileName).Wait();
                 while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {
                     Thread.Sleep(500);
@@ -261,7 +263,6 @@ namespace iNFT {
                 this.FilePathTextBox.Text = this.filePath.Split("\\")[^1];
 
                 if (IPFS_Interact.Image_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
-                    Log.InfoLog("change");
                     this.DisplayImage();
                 } else if (IPFS_Interact.Text_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
                     this.DisplayText();
@@ -306,9 +307,6 @@ namespace iNFT {
                 this.hasMinted = false;
             }
         }
-
-        private bool? hasMinted = null;
-        private string IPFS_Hash = "";
 
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
             this.hasMinted = null;
