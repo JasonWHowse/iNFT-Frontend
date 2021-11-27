@@ -4,15 +4,16 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 
 namespace iNFT.src {
-    class Ethereum_Interact {
+    public class Ethereum_Interact {
 
-        private readonly static string localNetAddress = "HTTP://127.0.0.1:8545";
-        private readonly static string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
-        private readonly static string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
+        private static readonly string localNetAddress = "HTTP://127.0.0.1:8545";
+        private static readonly string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
+        private static readonly string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
 
         private readonly string localContractAccount = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
         private readonly string testContractAccount = "";
@@ -53,6 +54,10 @@ namespace iNFT.src {
             } catch (Exception e) {
                 Log.ErrorLog(e);
             }
+        }
+
+        public bool AccountIsNull() {
+            return this.account == null;
         }
 
         public Ethereum_Interact(Crypto env) : this() {
@@ -102,23 +107,40 @@ namespace iNFT.src {
 
         public void Logout() {
             this.account = null;
+            this.envWeb3 = null;
             this.SetEnvironment(this.chain);
         }
 
-        public async Task GetHashFromContract() {
-            Contract cont = this.GetContract();
-            object[] parameters = new object[] { this.account.Address };
-            Function getFunct = cont.GetFunction("balanceOf");
-            string output = (await getFunct.CallAsync<int>(parameters)).ToString();
-            Log.InfoLog(output);
-            getFunct = cont.GetFunction("ownerOf");Log.InfoLog("ln123");
-            parameters = new object[] { new BigInteger(new HexBigInteger("0x9dfa6381a7a4c9d157cb152ba58e07107cc387932249cb4c45a7869014fa4a20")) }; Log.InfoLog("ln124");
+        public async Task<List<string>[]> TokenList() {
+            if(this.account == null) {
+                return null;
+            }
+            List<string>[] list = new List<string>[] { new List<string>(), new List<string>(), new List<string>() };
+            for (int index = 1; index > 0; index++) {
+                try {
+                    string tempAddress = (await this.GetContract().GetFunction(
+                    "ownerOf").CallAsync<object>(new object[] { index })).ToString();
+                    if (this.account.Address.Equals(tempAddress)) {
+                        list[0].Add(index.ToString());
+                        string url = (await this.GetContract().GetFunction(
+                    "tokenURI").CallAsync<object>(new object[] { index })).ToString();
+                        list[1].Add(url);
+                        list[2].Add(url.Split("/")[^1]);
+                    }
+                } catch (Exception) {
+                    index = -100;
+                }
+            }
+            return list;
+        }
+
+        public async Task<bool> GetHashFromContract(int index) {
             try {
-                output = (await getFunct.CallAsync<int>(parameters)).ToString();
-                Log.InfoLog(output);
-            }catch(Exception e) {
+                return this.account.Address.Equals((await this.GetContract().GetFunction(
+                    "ownerOf").CallAsync<object>(new object[] { index })).ToString());
+            } catch (Exception e) {
                 Log.ErrorLog(e);
-                Log.ErrorLog(e.GetType().ToString());
+                return false;
             }
         }
 

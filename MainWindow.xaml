@@ -3,29 +3,28 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:iNFT"
         mc:Ignorable="d"
         Title="iNFT" Height="450" Width="800" MinHeight="450" MinWidth="800" ResizeMode="CanMinimize">
-    <Grid x:Name="MainGrid" Background="LightGray">
+    <Grid x:Name="MainGrid" Background="Black">
         <!--=============================Main Window=============================-->
         <TextBox HorizontalAlignment="Center" Height="20" Margin="0,-360,0,0" TextWrapping="NoWrap" VerticalAlignment="Center" Width="440" x:Name="FileNameTextBox" TextChanged="FileNameTextBox_TextChanged"/>
-        <Button x:Name="BrowseButton" Content="Browse" HorizontalAlignment="Center" Margin="600,-360,0,0" VerticalAlignment="Center" Click="BrowseButton_Click"  Width="120" Height="20"/>
-        <Image x:Name="ImageNFTDisplay" Height="310 " Width="720" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,60,0,0"/>
+        <Button x:Name="BrowseButton" Content="Browse" HorizontalAlignment="Center" Margin="600,-360,0,0" VerticalAlignment="Center" Click="BrowseButton_Click"  Width="120" Height="20" Background="#26CAFA"/>
+        <Image x:Name="ImageNFTDisplay" Height="310 " Width="720" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,60,0,0" />
         <TextBox x:Name="TextNFTDisplay" Background="AliceBlue" HorizontalAlignment="Center" Margin="0,60,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="310" Width="720" IsReadOnly="True"/>
-        <ComboBox x:Name="NFTComboBox" HorizontalAlignment="Center" Margin="600,-300,0,0" VerticalAlignment="Center"  Width="120" Height="20" SelectionChanged="NFTComboBox_SelectionChanged"/>
-        <Button x:Name="MintButton" Content="Mint Button" HorizontalAlignment="Center" Margin="0,-300,0,0" VerticalAlignment="Center" Click="Mint_Button_Click"  Width="120" Height="20"/>
-        <!--<Button x:Name="TransferButton" Content="Transfer Button" HorizontalAlignment="Center" Margin="320,-300,0,0" VerticalAlignment="Center" Click="Transfer_Button_Click"  Width="120" Height="20"/>-->
-        <Button x:Name="LogoutButton" Content="Logout" HorizontalAlignment="Center" Margin="-600,-360,0,0" VerticalAlignment="Center" Click="Logout_Button_Click"  Width="120" Height="20"/>
+        <ComboBox x:Name="NFTComboBox" HorizontalAlignment="Center" Margin="600,-300,0,0" VerticalAlignment="Center"  Width="120" Height="20" SelectionChanged="NFTComboBox_SelectionChanged" Background="#26CAFA"/>
+        <Button x:Name="MintButton" Content="Mint Button" HorizontalAlignment="Center" Margin="0,-300,0,0" VerticalAlignment="Center" Click="Mint_Button_Click"  Width="120" Height="20" Background="#26CAFA"/>
+        <!--<Button x:Name="TransferButton" Content="Transfer Button" HorizontalAlignment="Center" Margin="320,-300,0,0" VerticalAlignment="Center" Click="Transfer_Button_Click"  Width="120" Height="20" Background="#26CAFA"/>-->
+        <Button x:Name="LogoutButton" Content="Logout" HorizontalAlignment="Center" Margin="-600,-360,0,0" VerticalAlignment="Center" Click="Logout_Button_Click"  Width="120" Height="20" Background="#26CAFA"/>
         <TextBox x:Name="FilePathTextBox" HorizontalAlignment="Center" Margin="-600,-300,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="120" Height="20" IsReadOnly="True"/>
-        <Button x:Name="CopytoClipboardButton" Content="Copy to Clipboard" Margin="-320,-300,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Height="20" Click="Copy_to_Clipboard_Click"/>
+        <Button x:Name="CopytoClipboardButton" Content="Copy to Clipboard" Margin="-320,-300,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Height="20" Click="Copy_to_Clipboard_Click" Background="#26CAFA"/>
         <!--=============================Main Window=============================-->
 
         <!--=============================Logon Window============================-->
-        <Label x:Name="UserNamePrivateKeyLabel" Content="Private Key"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-80,0,0"/>
-        <Label x:Name="EnvironmentLabel" Content="Environment"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,0,0,0"/>
-        <PasswordBox x:Name="UsernamePrivateKeyTextBox"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-80,0,0" PasswordChar="*"/>
-        <ComboBox x:Name="EnvironmentComboBox" Height="30" Width="260" Margin="90,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" SelectionChanged="EnvironmentChanged"/>
-        <Button x:Name="LoginButton" Height="30" Width="120" Margin="0,80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Login" Click="Login_Click"/>
+        <Label x:Name="UserNamePrivateKeyLabel" Content="Private Key"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,-80,0,0"  Background="#26CAFA"/>
+        <Label x:Name="EnvironmentLabel" Content="Environment"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="80" Margin="-280,0,0,0"  Background="#26CAFA"/>
+        <PasswordBox x:Name="UsernamePrivateKeyTextBox"  HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" Width="260" Margin="90,-80,0,0" PasswordChar="*" Background="#26CAFA"/>
+        <ComboBox x:Name="EnvironmentComboBox" Height="30" Width="260" Margin="90,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" SelectionChanged="EnvironmentChanged" Background="#26CAFA"/>
+        <Button x:Name="LoginButton" Height="30" Width="120" Margin="0,80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Login" Click="Login_Click" Background="#26CAFA"/>
         <!--=============================Logon Window============================-->
 
         <!--===========================Transfer Window===========================-->
@@ -33,6 +32,5 @@
         <!-- uncomment for deployments you will need to know what you are doing and manually configure teh Deploy_Contract class before compiling.
         <Button x:Name="Deploy" Height="30" Width="120" Margin="-280,80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Deploy" Click="deployButton"/>
          -->
-        <Button x:Name="Tester" Height="30" Width="120" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Test" Click="testerButton"/>
     </Grid>
 </Window>

@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 namespace iNFT.src {
-    class IPFS_Interact {
+    public class IPFS_Interact {
         //gateway = https://gateway.ipfs.io/ipfs/QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2
         private readonly IpfsClient defaultGateway = new IpfsClient("https://ipfs.infura.io:5001");
 
@@ -59,11 +59,11 @@ namespace iNFT.src {
         }
 
         public async Task<bool> GetIPFSFile(string path) {
-            using (Stream stream = await gateway.FileSystem.ReadFileAsync(path)) {
+            using (Stream stream = await this.gateway.FileSystem.ReadFileAsync(path)) {
                 try {
                     byte[] file = this.StreamToByteArray(stream);
                     this.Ext = MimeGuesser.GuessFileType(file).Extension;
-                    this.FileName = this.storePath + storeFileName + "." + this.Ext;
+                    this.FileName = this.storePath + this.storeFileName + "." + this.Ext;
                     using (Stream storeFile = File.Create(this.FileName)) {
                         try {
                             storeFile.Write(file);
@@ -82,7 +82,7 @@ namespace iNFT.src {
 
         public async Task<string> SetFileToIPFS(string path) {
             try {
-                string output = (await gateway.FileSystem.AddFileAsync(path)).Id.ToString();
+                string output = (await this.gateway.FileSystem.AddFileAsync(path)).Id.ToString();
                 return output;
             } catch (Exception e) {
                 Log.ErrorLog(e);
@@ -91,21 +91,13 @@ namespace iNFT.src {
         }
 
         public void DeleteFile(string filePath) {
-            if (File.Exists(filePath)) {
-                try {
-                    File.Delete(filePath);
-                } catch (Exception e) {
-                    Log.ErrorLog(e);
-                }
-            } else {
-                string[] files = Directory.GetFiles(this.storePath);
-                for (int i = 0; i < files.Length; i++) {
-                    if (files[i].Split(@"\")[^1].Contains(this.storeFileName)) {
-                        try {
-                            File.Delete(files[i]);
-                        } catch (Exception e) {
-                            Log.ErrorLog(e);
-                        }
+            string[] files = Directory.GetFiles(this.storePath);
+            for (int i = 0; i < files.Length; i++) {
+                if (files[i].Split(@"\")[^1].Contains(this.storeFileName)) {
+                    try {
+                        File.Delete(files[i]);
+                    } catch (Exception e) {
+                        Log.ErrorLog(e);
                     }
                 }
             }

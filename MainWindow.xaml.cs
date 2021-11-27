@@ -3,7 +3,9 @@ using iNFT.src.Logger;
 using iNFT.src.Toaster;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.ExceptionServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,12 +26,9 @@ namespace iNFT {
             this.InitializeComponent();
             _ = this.MainGrid.Children.Add(this.toast.GetToast());
             this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof(Crypto));
+            this.UsernamePrivateKeyTextBox.Password = "270afe316a844a84ff12c3c8cd6206edf812751b807eeba251ad84bb33f3e78a";
+            this.EnvironmentComboBox.SelectedIndex = 0;
             this.InitializeLogonWindow();
-
-            //TODOdelete this v
-            this.NFTComboBox.ItemsSource = new string[] { "QmSgiPTvE9XZo6YvSs8Xw9HW311aAxLnz9qGqgZDNFj8xj", "QmZHd1fbAsE4j281P69a9gR8UdoK3G8DsJ2G7oxVQ8osQ3", "QmaNdRRK5rVxBiodg8fcSpiPoZHFJuqw5ackGFTacHbbKa", "QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2",
-            "QmSyGCnVeNMQdxWmaV4eTNEfYo3i4xzE5f8mXm1te2hpfZ",
-            "QmSyGCnVeNMQdxWmaV4eTNEfYo3i4xzE5f8mXm1te2pfZ"};
         }
 
         /*=============================Logon Block================================*/
@@ -66,10 +65,6 @@ namespace iNFT {
         }
 
         private void Login_Click(object sender, RoutedEventArgs e) {
-            if (true) { //todo: delte this
-                this.UsernamePrivateKeyTextBox.Password = "7e61a0914ce8b3a0259d361bba78ac6a95582640e86444201876e2795f60cb32";
-                this.EnvironmentComboBox.SelectedIndex = 0;
-            }
             if (this.UsernamePrivateKeyTextBox.Password.Length > 1 && this.UsernamePrivateKeyTextBox.Password.ToLower()[1] == 'x') {
                 this.UsernamePrivateKeyTextBox.Password = this.UsernamePrivateKeyTextBox.Password.ToLower().Split("x")[1];
             }
@@ -103,7 +98,7 @@ namespace iNFT {
                 return;
             }
             this.UsernamePrivateKeyTextBox.Password = "";
-            Clipboard.SetText(Log.GetFileName());//todo: delete before prod push
+            this.SetNFTComboBox();
             this.InitializeMainWindow();
         }
 
@@ -171,14 +166,35 @@ namespace iNFT {
             Application.Current.MainWindow.Height = 450;
             Application.Current.MainWindow.MinHeight = 450;
             Application.Current.MainWindow.MaxHeight = 450;
-
-            //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
         }
+
+        private void SetNFTComboBox() {
+            this.nftList = null;
+            if (etherium.AccountIsNull()) {
+                this.NFTComboBox.ItemsSource = null;
+                return;
+            }
+            _ = Task.Run(this.GetTokens);
+            while (this.nftList == null) {
+                Thread.Sleep(500);
+            }
+            this.NFTComboBox.ItemsSource = this.nftList[2];
+            this.NFTComboBox.IsEnabled = true;
+        }
+
+        private async void GetTokens() {
+            this.nftList = await this.etherium.TokenList();
+        }
+
+        private List<string>[] nftList;
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog fileName = new OpenFileDialog();
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
         }
+
+
+
 
         private void DisplayImage() {
             try {
@@ -186,9 +202,11 @@ namespace iNFT {
                 this.TextNFTDisplay.Visibility = Visibility.Hidden;
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.UriSource = new Uri(this.filePath);
-                bitmap.EndInit();
+                bitmap.EndInit(); 
+
                 this.ImageNFTDisplay.Source = bitmap;
             } catch (Exception exc) {
                 Log.ErrorLog(exc);
@@ -215,9 +233,8 @@ namespace iNFT {
                 Log.ErrorLog(e);
             }
         }
-
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (this.NFTComboBox.SelectedIndex == -1 /*TODO: UPDATE: && !IsInBlockchain(this.NFTComboBox.SelectedItem)*/) {
+            if (this.NFTComboBox.SelectedIndex == -1) {
                 this.filePath = this.FilePathTextBox.Text = "";
                 this.FilePathTextBox.Visibility = Visibility.Hidden;
                 this.CopytoClipboardButton.Visibility = Visibility.Hidden;
@@ -226,17 +243,15 @@ namespace iNFT {
                 //this.TransferButton.Visibility = Visibility.Hidden;
             } else {
                 //this.TransferButton.Visibility = Visibility.Visible;
-                //todo: check if token still exists in users account.
-                this.IPFS.DeleteFile(this.filePath);
-                this.filePath = this.NFTComboBox.SelectedItem.ToString();
+                this.IPFS.DeleteFile(this.filePath.Split("\\")[^1]);
+                this.filePath = this.NFTComboBox.SelectedItem.ToString();Log.InfoLog(filePath);
                 Task.Run(this.SetFileName).Wait();
                 while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {
                     Thread.Sleep(500);
                 }
-
                 if (this.filePath.Equals("false")) {
                     this.toast.PopToastie("No File Found", ToastColors.ERROR, 2);
-                    //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+                    this.SetNFTComboBox();
                     return;
                 }
 
@@ -246,12 +261,12 @@ namespace iNFT {
                 this.FilePathTextBox.Text = this.filePath.Split("\\")[^1];
 
                 if (IPFS_Interact.Image_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
+                    Log.InfoLog("change");
                     this.DisplayImage();
                 } else if (IPFS_Interact.Text_File_Types.Contains(IPFS_Interact.GetTypeByPathFromByteCode(this.filePath).ToLower())) {
                     this.DisplayText();
                 }
             }
-            //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
         }
 
         private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
@@ -292,8 +307,6 @@ namespace iNFT {
             }
         }
 
-
-
         private bool? hasMinted = null;
         private string IPFS_Hash = "";
 
@@ -302,8 +315,7 @@ namespace iNFT {
             this.filePath = this.FileNameTextBox.Text;
             if (File.Exists(this.FileNameTextBox.Text)) {
                 this.IPFS_Hash = "Waiting";
-                //Task.Run(this.PostFileToIPFS).Wait();
-                this.IPFS_Hash = "QmTfchXSZowJqQ9DUzmqhAgNg6mkGHfpFVYY9aqoJTyCv5";//TODO: Delete this line and uncomment the above line
+                Task.Run(this.PostFileToIPFS).Wait();
                 while (this.IPFS_Hash.Equals("Waiting")) {
                     Thread.Sleep(500);
                 }
@@ -324,7 +336,7 @@ namespace iNFT {
                     this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
                 }
 
-                //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+                this.SetNFTComboBox();
                 this.FileNameTextBox.Text = "";
             } else {
                 this.toast.PopToastie("No Such File Exists", ToastColors.ERROR, 2);
@@ -346,13 +358,6 @@ namespace iNFT {
 
         /*==============================Main Block================================*/
 
-        private void testerButton(object sender, RoutedEventArgs e) {
-            try {
-                Task.Run(etherium.GetHashFromContract).Wait();
-            }catch(Exception ex) {
-                Log.ErrorLog(ex);
-            }
-        }
         //uncomment to deploy contracts this is a dev level tool
         //private void deployButton(object s, RoutedEventArgs e) {
         //    Task.Run(Deploy_Contract.Contract_Preparation);
