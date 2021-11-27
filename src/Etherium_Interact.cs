@@ -1,35 +1,27 @@
-﻿using iNFT.src.helper_functions;
-using iNFT.src.Logger;
+﻿using iNFT.src.Logger;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
-using Nethereum.Signer;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using Nethereum.Web3.Accounts.Managed;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace iNFT.src {
-    class Ethereum_Interact {
+    public class Ethereum_Interact {
 
-        private readonly static string localNetAddress = "HTTP://127.0.0.1:8545";
-        private readonly static string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
-        private readonly static string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
+        private static readonly string localNetAddress = "HTTP://127.0.0.1:8545";
+        private static readonly string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
+        private static readonly string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
 
         private readonly string localContractAccount = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
         private readonly string testContractAccount = "";
         private readonly string prodContractAccount = null;
 
-        private BigInteger localChainID = 5777;
-        private BigInteger testChainID = 3;
-        private BigInteger prodChainID = 1;
+        private readonly BigInteger localChainID = 5777;
+        private readonly BigInteger testChainID = 3;
+        private readonly BigInteger prodChainID = 1;
 
         private readonly Web3 localWeb3;
         private readonly Web3 testNet;
@@ -64,6 +56,10 @@ namespace iNFT.src {
             }
         }
 
+        public bool AccountIsNull() {
+            return this.account == null;
+        }
+
         public Ethereum_Interact(Crypto env) : this() {
             this.SetEnvironment(env);
         }
@@ -89,6 +85,8 @@ namespace iNFT.src {
                     this.envAddress = prodNetAddress;
                     this.envChainID = this.prodChainID;
                     break;
+                default:
+                    break;
             }
         }
 
@@ -102,22 +100,48 @@ namespace iNFT.src {
         }
 
         public async Task<decimal> CheckUserName(string privateKey) {
-            this.account = new Account(privateKey, envChainID);
-            this.envWeb3 = new Web3(account, this.envAddress);
-            Log.InfoLog((await this.envWeb3.Eth.GetBalance.SendRequestAsync(this.account.Address)).Value.ToString());
+            this.account = new Account(privateKey, this.envChainID);
+            this.envWeb3 = new Web3(this.account, this.envAddress);
             return Web3.Convert.FromWei(await this.envWeb3.Eth.GetBalance.SendRequestAsync(this.account.Address));
         }
 
         public void Logout() {
             this.account = null;
+            this.envWeb3 = null;
             this.SetEnvironment(this.chain);
         }
 
-        public async Task GetHashFromContract() {
-            Contract cont = this.GetContract();
-            Function getFunct = cont.GetFunction("get");
-            string output = await getFunct.CallAsync<string>();
-            //this.MemeHash = output;
+        public async Task<List<string>[]> TokenList() {
+            if(this.account == null) {
+                return null;
+            }
+            List<string>[] list = new List<string>[] { new List<string>(), new List<string>(), new List<string>() };
+            for (int index = 1; index > 0; index++) {
+                try {
+                    string tempAddress = (await this.GetContract().GetFunction(
+                    "ownerOf").CallAsync<object>(new object[] { index })).ToString();
+                    if (this.account.Address.Equals(tempAddress)) {
+                        list[0].Add(index.ToString());
+                        string url = (await this.GetContract().GetFunction(
+                    "tokenURI").CallAsync<object>(new object[] { index })).ToString();
+                        list[1].Add(url);
+                        list[2].Add(url.Split("/")[^1]);
+                    }
+                } catch (Exception) {
+                    index = -100;
+                }
+            }
+            return list;
+        }
+
+        public async Task<bool> GetHashFromContract(int index) {
+            try {
+                return this.account.Address.Equals((await this.GetContract().GetFunction(
+                    "ownerOf").CallAsync<object>(new object[] { index })).ToString());
+            } catch (Exception e) {
+                Log.ErrorLog(e);
+                return false;
+            }
         }
 
         public async Task<bool> Mint(string hash) {
@@ -127,7 +151,7 @@ namespace iNFT.src {
                 Contract cont = this.GetContract();
                 Function setFunct = cont.GetFunction("mint");
                 object[] parameters = { this.account.Address, hash };
-                envWeb3.TransactionManager.UseLegacyAsDefault = true;
+                this.envWeb3.TransactionManager.UseLegacyAsDefault = true;
                 string transaction = await setFunct.SendTransactionAsync(this.account.Address, gas, value, parameters);
 
                 Log.InfoLog(transaction);

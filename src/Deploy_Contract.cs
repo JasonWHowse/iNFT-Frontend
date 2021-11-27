@@ -105,7 +105,7 @@ namespace iNFT.src {
             Log.WarningLog("Estimated Gas: " + (await web3.Eth.DeployContract.EstimateGasAsync(ABI, byteCode, fromAddress)).ToString());
 
             string transactionHash = await web3.Eth.DeployContract.SendRequestAsync(ABI, byteCode, fromAddress, new HexBigInteger(new BigInteger(20000000000)));
-            var receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
+            Nethereum.RPC.Eth.DTOs.TransactionReceipt receipt = await web3.Eth.Transactions.GetTransactionReceipt.SendRequestAsync(transactionHash);
 
             while (receipt == null) {
                 Thread.Sleep(5000);

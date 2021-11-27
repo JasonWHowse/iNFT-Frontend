@@ -51,15 +51,38 @@ namespace iNFT.src.Logger {
             LogMessage("INFO", message);
         }
 
+        public static void InfoLog(object message) {
+            LogMessage("INFO", message.ToString());
+        }
+
         public static void ErrorLog(string message) {
             if (reportingErrors) {
                 LogMessage("ERROR", message);
             }
         }
 
+        public static void ErrorLog(object message) {
+            if (reportingErrors) {
+                LogMessage("ERROR", message.ToString());
+            }
+        }
+
+        internal static void ErrorLog(Exception e) {
+            if (reportingErrors) {
+                ErrorLog(e.Message.ToString());
+                ErrorLog(e.StackTrace.ToString());
+            }
+        }
+
         public static void WarningLog(string message) {
             if (reportingWarnings) {
                 LogMessage("WARNING", message);
+            }
+        }
+
+        public static void WarningLog(object message) {
+            if (reportingWarnings) {
+                LogMessage("WARNING", message.ToString());
             }
         }
 
@@ -77,13 +100,6 @@ namespace iNFT.src.Logger {
 
         public static string GetLog() {
             return File.ReadAllText(_fileName);
-        }
-
-        internal static void ErrorLog(Exception e) {
-            if (reportingErrors) {
-                ErrorLog(e.Message.ToString());
-                ErrorLog(e.StackTrace.ToString());
-            }
         }
     }
 }

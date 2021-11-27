@@ -3,7 +3,9 @@ using iNFT.src.Logger;
 using iNFT.src.Toaster;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.ExceptionServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,26 +21,16 @@ namespace iNFT {
         private readonly Toaster toast = new Toaster();
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
+        private bool? hasMinted = null;
+        private string IPFS_Hash = "";
         public MainWindow() {
             Log.StartLogger();
             this.InitializeComponent();
             _ = this.MainGrid.Children.Add(this.toast.GetToast());
             this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof(Crypto));
-
-            //todo: delete below
-
+            this.UsernamePrivateKeyTextBox.Password = "270afe316a844a84ff12c3c8cd6206edf812751b807eeba251ad84bb33f3e78a";
             this.EnvironmentComboBox.SelectedIndex = 0;
-
-            //Task.Run(this.etherium.deletethis2contractDeploy);
-
-            //todo: delete below
-
             this.InitializeLogonWindow();
-
-            //TODOdelete this v
-            this.NFTComboBox.ItemsSource = new string[] { "QmSgiPTvE9XZo6YvSs8Xw9HW311aAxLnz9qGqgZDNFj8xj", "QmZHd1fbAsE4j281P69a9gR8UdoK3G8DsJ2G7oxVQ8osQ3", "QmaNdRRK5rVxBiodg8fcSpiPoZHFJuqw5ackGFTacHbbKa", "QmWtJ2vPhy6eWSJ8MNk9Y7cLHE5gM3HWXSSUWCodNsqXZ2",
-            "QmSyGCnVeNMQdxWmaV4eTNEfYo3i4xzE5f8mXm1te2hpfZ",
-            "QmSyGCnVeNMQdxWmaV4eTNEfYo3i4xzE5f8mXm1te2pfZ"};
         }
 
         /*=============================Logon Block================================*/
@@ -101,14 +93,14 @@ namespace iNFT {
                     this.etherium.Logout();
                     return;
                 }
-                this.toast.PopToastie((this.userBalance == 0M ? "Warning!\r\n" : "") + "Current Balance: " + this.userBalance, this.userBalance == 0M ? ToastColors.WARNING : ToastColors.PRIMARY, 2);
+                this.toast.PopToastie((this.userBalance == 0M ? "Warning!\r\n" : "") + "Current Balance: " + this.userBalance, this.userBalance == 0M ? ToastColors.WARNING : ToastColors.PRIMARY, 4);
             } catch (Exception ex) {
                 this.toast.PopToastie("Failed To Connect to Environment", ToastColors.ERROR, 2);
                 Log.ErrorLog(ex);
                 return;
             }
             this.UsernamePrivateKeyTextBox.Password = "";
-            Clipboard.SetText(Log.GetFileName());//todo: delete before prod push
+            this.SetNFTComboBox();
             this.InitializeMainWindow();
         }
 
@@ -176,14 +168,35 @@ namespace iNFT {
             Application.Current.MainWindow.Height = 450;
             Application.Current.MainWindow.MinHeight = 450;
             Application.Current.MainWindow.MaxHeight = 450;
-
-            //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
         }
+
+        private void SetNFTComboBox() {
+            this.nftList = null;
+            if (etherium.AccountIsNull()) {
+                this.NFTComboBox.ItemsSource = null;
+                return;
+            }
+            _ = Task.Run(this.GetTokens);
+            while (this.nftList == null) {
+                Thread.Sleep(500);
+            }
+            this.NFTComboBox.ItemsSource = this.nftList[2];
+            this.NFTComboBox.IsEnabled = true;
+        }
+
+        private async void GetTokens() {
+            this.nftList = await this.etherium.TokenList();
+        }
+
+        private List<string>[] nftList;
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog fileName = new OpenFileDialog();
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
         }
+
+
+
 
         private void DisplayImage() {
             try {
@@ -191,9 +204,11 @@ namespace iNFT {
                 this.TextNFTDisplay.Visibility = Visibility.Hidden;
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.UriSource = new Uri(this.filePath);
-                bitmap.EndInit();
+                bitmap.EndInit(); 
+
                 this.ImageNFTDisplay.Source = bitmap;
             } catch (Exception exc) {
                 Log.ErrorLog(exc);
@@ -220,9 +235,8 @@ namespace iNFT {
                 Log.ErrorLog(e);
             }
         }
-
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (this.NFTComboBox.SelectedIndex == -1 /*TODO: UPDATE: && !IsInBlockchain(this.NFTComboBox.SelectedItem)*/) {
+            if (this.NFTComboBox.SelectedIndex == -1) {
                 this.filePath = this.FilePathTextBox.Text = "";
                 this.FilePathTextBox.Visibility = Visibility.Hidden;
                 this.CopytoClipboardButton.Visibility = Visibility.Hidden;
@@ -231,17 +245,15 @@ namespace iNFT {
                 //this.TransferButton.Visibility = Visibility.Hidden;
             } else {
                 //this.TransferButton.Visibility = Visibility.Visible;
-                //todo: check if token still exists in users account.
-                this.IPFS.DeleteFile(this.filePath);
+                this.IPFS.DeleteFile(this.filePath.Split("\\")[^1]);
                 this.filePath = this.NFTComboBox.SelectedItem.ToString();
                 Task.Run(this.SetFileName).Wait();
                 while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {
                     Thread.Sleep(500);
                 }
-
                 if (this.filePath.Equals("false")) {
                     this.toast.PopToastie("No File Found", ToastColors.ERROR, 2);
-                    //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+                    this.SetNFTComboBox();
                     return;
                 }
 
@@ -256,7 +268,6 @@ namespace iNFT {
                     this.DisplayText();
                 }
             }
-            //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
         }
 
         private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
@@ -297,18 +308,12 @@ namespace iNFT {
             }
         }
 
-
-
-        private bool? hasMinted = null;
-        private string IPFS_Hash = "";
-
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
             this.hasMinted = null;
             this.filePath = this.FileNameTextBox.Text;
             if (File.Exists(this.FileNameTextBox.Text)) {
                 this.IPFS_Hash = "Waiting";
-                //Task.Run(this.PostFileToIPFS).Wait();
-                this.IPFS_Hash = "QmTfchXSZowJqQ9DUzmqhAgNg6mkGHfpFVYY9aqoJTyCv5";//TODO: Delete this line and uncomment the above line
+                Task.Run(this.PostFileToIPFS).Wait();
                 while (this.IPFS_Hash.Equals("Waiting")) {
                     Thread.Sleep(500);
                 }
@@ -328,13 +333,8 @@ namespace iNFT {
                 } else {
                     this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
                 }
-                //if(EthereumMint(this.FileNameTextBox.Text)){
-                //this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
-                //}else{
-                //this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
-                //}
 
-                //TODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+                this.SetNFTComboBox();
                 this.FileNameTextBox.Text = "";
             } else {
                 this.toast.PopToastie("No Such File Exists", ToastColors.ERROR, 2);
@@ -355,9 +355,10 @@ namespace iNFT {
         }
 
         /*==============================Main Block================================*/
+
         //uncomment to deploy contracts this is a dev level tool
-        private void deployButton(object s, RoutedEventArgs e) {
-            Task.Run(Deploy_Contract.Contract_Preparation);
-        }
+        //private void deployButton(object s, RoutedEventArgs e) {
+        //    Task.Run(Deploy_Contract.Contract_Preparation);
+        //}
     }
 }
