@@ -6,7 +6,11 @@ using System.IO;
 
 namespace iNFT.src.helper_functions {
     class Helpers {
-        //Attemps to get a manipulatable JObject from a json file, full path accepted
+        /// <summary>
+        /// Attemps to get a manipulatable JObject from a json file, full path accepted
+        /// </summary>
+        /// <param name="fileNamepath"></param>
+        /// <returns></returns>
         public static JObject GetJsonObject(string fileNamepath) {
             JObject output = null;
             try {
@@ -17,7 +21,12 @@ namespace iNFT.src.helper_functions {
             return output;
         }//public static JObject GetJsonObject(string fileNamepath) {
 
-        //API for filename and path 
+        /// <summary>
+        /// API for filename and path 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static JObject GetJsonObject(string fileName, string path) {
             return GetJsonObject(path + fileName);
         }//public static JObject GetJsonObject(string fileName, string path) {

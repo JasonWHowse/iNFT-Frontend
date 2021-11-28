@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TempAccounts.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="build\contracts\" />
     <Folder Include="contracts\" />
     <Folder Include="test\" />
