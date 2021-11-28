@@ -111,7 +111,10 @@ namespace iNFT.src.Logger {
             return _fileName;
         }//public static string GetFileName() {
 
-        //Gets all text as a string of the current log file.
+        /// <summary>
+        /// Gets all text as a string of the current log file.
+        /// </summary>
+        /// <returns></returns>
         public static string GetLog() {
             return File.ReadAllText(_fileName);
         }//public static string GetLog() {

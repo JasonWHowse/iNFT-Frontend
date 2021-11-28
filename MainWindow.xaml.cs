@@ -22,6 +22,10 @@ namespace iNFT {
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
         private bool? hasMinted = null;
         private string IPFS_Hash = "";
+
+        /// <summary>
+        /// MainWindow
+        /// </summary>
         public MainWindow() {
             Log.StartLogger();
             this.InitializeComponent();
@@ -244,7 +248,7 @@ namespace iNFT {
                 //this.TransferButton.Visibility = Visibility.Hidden;
             } else {
                 //this.TransferButton.Visibility = Visibility.Visible;
-                this.IPFS.DeleteFile(this.filePath.Split("\\")[^1]);
+                this.IPFS.DeleteFile();
                 this.filePath = this.NFTComboBox.SelectedItem.ToString();
                 Task.Run(this.SetFileName).Wait();
                 while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {

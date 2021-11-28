@@ -50,7 +50,21 @@ namespace iNFT.src.Toaster {
         /// <summary>
         /// Enum for selecting message type 3 different presets
         /// </summary>
-        public enum ToastColors { PRIMARY, WARNING, ERROR }
+        public enum ToastColors {
+            /// <summary>
+            /// Primary
+            /// Primary
+            /// </summary>
+            PRIMARY, 
+            /// <summary>
+            /// Warning
+            /// </summary>
+            WARNING, 
+            /// <summary>
+            /// Error
+            /// </summary>
+            ERROR 
+        }
 
         /// <summary>
         /// Constructor to instatiate a new reuseable toaster message
