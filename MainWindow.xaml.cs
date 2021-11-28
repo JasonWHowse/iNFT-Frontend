@@ -5,7 +5,6 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,13 +22,15 @@ namespace iNFT {
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
         private bool? hasMinted = null;
         private string IPFS_Hash = "";
+
+        /// <summary>
+        /// MainWindow
+        /// </summary>
         public MainWindow() {
             Log.StartLogger();
             this.InitializeComponent();
             _ = this.MainGrid.Children.Add(this.toast.GetToast());
             this.EnvironmentComboBox.ItemsSource = Enum.GetValues(typeof(Crypto));
-            this.UsernamePrivateKeyTextBox.Password = "270afe316a844a84ff12c3c8cd6206edf812751b807eeba251ad84bb33f3e78a";
-            this.EnvironmentComboBox.SelectedIndex = 0;
             this.InitializeLogonWindow();
         }
 
@@ -93,6 +94,7 @@ namespace iNFT {
                     this.etherium.Logout();
                     return;
                 }
+                this.SetNFTComboBox();
                 this.toast.PopToastie((this.userBalance == 0M ? "Warning!\r\n" : "") + "Current Balance: " + this.userBalance, this.userBalance == 0M ? ToastColors.WARNING : ToastColors.PRIMARY, 4);
             } catch (Exception ex) {
                 this.toast.PopToastie("Failed To Connect to Environment", ToastColors.ERROR, 2);
@@ -100,7 +102,6 @@ namespace iNFT {
                 return;
             }
             this.UsernamePrivateKeyTextBox.Password = "";
-            this.SetNFTComboBox();
             this.InitializeMainWindow();
         }
 
@@ -245,7 +246,7 @@ namespace iNFT {
                 //this.TransferButton.Visibility = Visibility.Hidden;
             } else {
                 //this.TransferButton.Visibility = Visibility.Visible;
-                this.IPFS.DeleteFile(this.filePath.Split("\\")[^1]);
+                this.IPFS.DeleteFile();
                 this.filePath = this.NFTComboBox.SelectedItem.ToString();
                 Task.Run(this.SetFileName).Wait();
                 while (this.filePath.Equals(this.NFTComboBox.SelectedValue)) {

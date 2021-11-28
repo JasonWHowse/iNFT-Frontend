@@ -9,15 +9,18 @@ using System.Numerics;
 using System.Threading.Tasks;
 
 namespace iNFT.src {
+    /// <summary>
+    /// Class to interact with the nft Contract
+    /// </summary>
     public class Ethereum_Interact {
 
-        private static readonly string localNetAddress = "HTTP://127.0.0.1:8545";
+        private static readonly string localNetAddress = "HTTP://127.0.0.1:7545";
         private static readonly string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
         private static readonly string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
 
-        private readonly string localContractAccount = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
-        private readonly string testContractAccount = "";
-        private readonly string prodContractAccount = null;
+        private readonly string localContractAddress = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
+        private readonly string testContractAddress = "";
+        private readonly string prodContractAddress = null;
 
         private readonly BigInteger localChainID = 5777;
         private readonly BigInteger testChainID = 3;
@@ -29,15 +32,48 @@ namespace iNFT.src {
 
         private Web3 envWeb3;
         private string envAddress;
-        public string EnvContractAccount { get; private set; }
-        public BigInteger envChainID;
-        public Crypto chain;
 
         private Account account;
 
+        /// <summary>
+        /// Account address associated with the contract
+        /// </summary>
+        public string EnvContractAccount { get; private set; }
 
-        public enum Crypto { LOCAL, ROPSTEN, Ethereum_Mainnet }
+        /// <summary>
+        /// Current Environment Network ID/Chain ID
+        /// </summary>
+        public BigInteger envChainID;
 
+        /// <summary>
+        /// Which Environment is being used
+        /// </summary>
+        public Crypto chain;
+
+        /// <summary>
+        /// Enum to choose which account is being used
+        /// </summary>
+        public enum Crypto {
+
+            /// <summary>
+            /// Local account 
+            /// </summary>
+            LOCAL,
+
+            /// <summary>
+            /// Test account 
+            /// </summary>
+            ROPSTEN,
+
+            /// <summary>
+            /// Production account 
+            /// </summary>
+            Ethereum_Mainnet
+        }
+
+        /// <summary>
+        /// Initializes the web3 contracts for each environment
+        /// </summary>
         public Ethereum_Interact() {
             try {
                 this.localWeb3 = new Web3(testNetAddress);
@@ -56,32 +92,44 @@ namespace iNFT.src {
             }
         }
 
+        /// <summary>
+        /// return bool if the Account variable is null.
+        /// </summary>
+        /// <returns></returns>
         public bool AccountIsNull() {
             return this.account == null;
         }
 
+        /// <summary>
+        /// Constructor that sets the environment variables
+        /// </summary>
+        /// <param name="env"></param>
         public Ethereum_Interact(Crypto env) : this() {
             this.SetEnvironment(env);
         }
 
+        /// <summary>
+        /// Sets the environment variables based on locat, Ropsten, Main_Net
+        /// </summary>
+        /// <param name="env"></param>
         public void SetEnvironment(Crypto env) {
             this.chain = env;
             switch (env) {
                 case Crypto.LOCAL:
                     this.envWeb3 = this.localWeb3;
-                    this.EnvContractAccount = this.localContractAccount;
+                    this.EnvContractAccount = this.localContractAddress;
                     this.envAddress = localNetAddress;
                     this.envChainID = this.localChainID;
                     break;
                 case Crypto.ROPSTEN:
                     this.envWeb3 = this.testNet;
-                    this.EnvContractAccount = this.testContractAccount;
+                    this.EnvContractAccount = this.testContractAddress;
                     this.envAddress = testNetAddress;
                     this.envChainID = this.testChainID;
                     break;
                 case Crypto.Ethereum_Mainnet:
                     this.envWeb3 = this.prodNet;
-                    this.EnvContractAccount = this.prodContractAccount;
+                    this.EnvContractAccount = this.prodContractAddress;
                     this.envAddress = prodNetAddress;
                     this.envChainID = this.prodChainID;
                     break;
@@ -90,27 +138,48 @@ namespace iNFT.src {
             }
         }
 
-
-        public async Task GetAccountBalance(string account) {
-            Log.InfoLog("Balance = " + (await this.envWeb3.Eth.GetBalance.SendRequestAsync(account)).Value.ToString());
+        /// <summary>
+        /// Returns address account
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public async Task<decimal> GetAccountBalance(string address) {
+            return Web3.Convert.FromWei(await this.envWeb3.Eth.GetBalance.SendRequestAsync(address));
         }
 
+        /// <summary>
+        /// Gets the Contract detail
+        /// </summary>
+        /// <returns></returns>
         public Contract GetContract() {
-            return this.envWeb3.Eth.GetContract(Contract_Details.NFT_API, this.EnvContractAccount);
+            return this.envWeb3.Eth.GetContract(Contract_Details.NFT_ABI, this.EnvContractAccount);
         }
 
+        /// <summary>
+        /// Sets the current environment and address to the appropriate private key
+        /// return the account balance associated with the account
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <returns></returns>
         public async Task<decimal> CheckUserName(string privateKey) {
             this.account = new Account(privateKey, this.envChainID);
             this.envWeb3 = new Web3(this.account, this.envAddress);
-            return Web3.Convert.FromWei(await this.envWeb3.Eth.GetBalance.SendRequestAsync(this.account.Address));
+            return await this.GetAccountBalance(this.account.Address);
         }
 
+        /// <summary>
+        /// logs user out by destroying environments
+        /// </summary>
         public void Logout() {
             this.account = null;
             this.envWeb3 = null;
             this.SetEnvironment(this.chain);
         }
 
+        /// <summary>
+        /// Returns all tokens associated with a particular account
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<string>[]> TokenList() {
             if(this.account == null) {
                 return null;
@@ -134,7 +203,12 @@ namespace iNFT.src {
             return list;
         }
 
-        public async Task<bool> GetHashFromContract(int index) {
+        /// <summary>
+        /// Returns a boolean based on whether or not the Address has a Token at a particular index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public async Task<bool> CheckAccountByIndex(int index) {
             try {
                 return this.account.Address.Equals((await this.GetContract().GetFunction(
                     "ownerOf").CallAsync<object>(new object[] { index })).ToString());
@@ -144,6 +218,11 @@ namespace iNFT.src {
             }
         }
 
+        /// <summary>
+        /// Attempts to post a token to the block chain network and returns true if its successful
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns></returns>
         public async Task<bool> Mint(string hash) {
             try {
                 HexBigInteger gas = new HexBigInteger(new BigInteger(400000));
