@@ -103,12 +103,12 @@
             Enum to choose which account is being used
             </summary>
         </member>
-        <member name="F:iNFT.src.Ethereum_Interact.Crypto.LOCAL">
+        <member name="F:iNFT.src.Ethereum_Interact.Crypto.Local">
             <summary>
             Local account 
             </summary>
         </member>
-        <member name="F:iNFT.src.Ethereum_Interact.Crypto.ROPSTEN">
+        <member name="F:iNFT.src.Ethereum_Interact.Crypto.Ropsten">
             <summary>
             Test account 
             </summary>

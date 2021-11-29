@@ -113,6 +113,15 @@ namespace iNFT {
                 Log.ErrorLog(e);
             }
         }
+        private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
+            if (this.EnvironmentComboBox.SelectedIndex == -1) {
+            } else if (this.EnvironmentComboBox.SelectedIndex == 2) {
+                this.toast.PopToastie("The Main Network contract has not been deployed", ToastColors.WARNING, 2);
+                this.EnvironmentComboBox.SelectedIndex = -1;
+            } else {
+                this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
+            }
+        }
 
         private decimal userBalance = -1M;
 
@@ -196,9 +205,6 @@ namespace iNFT {
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
         }
 
-
-
-
         private void DisplayImage() {
             try {
                 this.ImageNFTDisplay.Visibility = Visibility.Visible;
@@ -275,10 +281,11 @@ namespace iNFT {
             this.NFTComboBox.SelectedIndex = -1;
             this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
             if (File.Exists(this.FileNameTextBox.Text)) {
-                if (IPFS_Interact.Image_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                string ext = IPFS_Interact.GetTypeByPathFromByteCode(this.FileNameTextBox.Text).ToLower();
+                if (IPFS_Interact.Image_File_Types.Contains(ext)){
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayImage();
-                } else if (IPFS_Interact.Text_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                } else if (IPFS_Interact.Text_File_Types.Contains(ext)) {
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayText();
                 } else {
@@ -349,10 +356,6 @@ namespace iNFT {
 
         private void Copy_to_Clipboard_Click(object sender, RoutedEventArgs e) {
             Clipboard.SetText(this.filePath);
-        }
-
-        private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
-            this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
         }
 
         /*==============================Main Block================================*/
