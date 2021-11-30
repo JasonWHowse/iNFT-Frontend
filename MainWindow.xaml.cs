@@ -1,4 +1,5 @@
 ﻿using iNFT.src;
+using iNFT.src.helper_functions;
 using iNFT.src.Logger;
 using iNFT.src.Toaster;
 using Microsoft.Win32;
@@ -19,9 +20,6 @@ namespace iNFT {
 
         private readonly Toaster toast = new Toaster();
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();
-        private readonly IPFS_Interact IPFS = new IPFS_Interact();
-        private bool? hasMinted = null;
-        private string IPFS_Hash = "";
 
         /// <summary>
         /// MainWindow
@@ -35,6 +33,8 @@ namespace iNFT {
         }
 
         /*=============================Logon Block================================*/
+
+        private decimal userBalance = -1M;
 
         private void InitializeLogonWindow() {
             this.FilePathTextBox.Text = this.FileNameTextBox.Text = "";
@@ -123,8 +123,6 @@ namespace iNFT {
             }
         }
 
-        private decimal userBalance = -1M;
-
         /*=============================Logon Block================================*/
 
         /*==========================Transfer Block================================*/
@@ -152,6 +150,12 @@ namespace iNFT {
         /*==========================Transfer Block================================*/
 
         /*==============================Main Block================================*/
+
+        private List<string>[] nftList;
+        private string filePath = "";
+        private readonly IPFS_Interact IPFS = new IPFS_Interact();
+        private bool? hasMinted = null;
+        private string IPFS_Hash = "";
 
         private void InitializeMainWindow() {
             this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
@@ -198,8 +202,6 @@ namespace iNFT {
             this.nftList = await this.etherium.TokenList();
         }
 
-        private List<string>[] nftList;
-
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog fileName = new OpenFileDialog();
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
@@ -214,11 +216,10 @@ namespace iNFT {
                 bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.UriSource = new Uri(this.filePath);
-                bitmap.EndInit(); 
-
+                bitmap.EndInit();
                 this.ImageNFTDisplay.Source = bitmap;
-            } catch (Exception exc) {
-                Log.ErrorLog(exc);
+            } catch (Exception e) {
+                Log.ErrorLog(e);
             }
         }
 
@@ -232,8 +233,6 @@ namespace iNFT {
             }
         }
 
-        private string filePath = "";
-
         private async void SetFileName() {
             try {
                 this.filePath = await this.IPFS.GetIPFSFile(this.filePath) ? this.IPFS.FileName : "false";
@@ -242,6 +241,7 @@ namespace iNFT {
                 Log.ErrorLog(e);
             }
         }
+
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (this.NFTComboBox.SelectedIndex == -1) {
                 this.filePath = this.FilePathTextBox.Text = "";
@@ -282,7 +282,7 @@ namespace iNFT {
             this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
             if (File.Exists(this.FileNameTextBox.Text)) {
                 string ext = IPFS_Interact.GetTypeByPathFromByteCode(this.FileNameTextBox.Text).ToLower();
-                if (IPFS_Interact.Image_File_Types.Contains(ext)){
+                if (IPFS_Interact.Image_File_Types.Contains(ext)) {
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayImage();
                 } else if (IPFS_Interact.Text_File_Types.Contains(ext)) {
