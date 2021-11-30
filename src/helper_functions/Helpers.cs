@@ -17,12 +17,12 @@ namespace iNFT.src.helper_functions {
                 output = (JObject)JsonConvert.DeserializeObject(new StreamReader(fileNamepath).ReadToEnd());
             } catch (Exception e) { //try {
                 Log.ErrorLog(e);
-            }//} catch (Exception) { 
+            }//} catch (Exception) {
             return output;
         }//public static JObject GetJsonObject(string fileNamepath) {
 
         /// <summary>
-        /// API for filename and path 
+        /// API for filename and path
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="path"></param>

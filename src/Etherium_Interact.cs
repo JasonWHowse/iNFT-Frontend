@@ -20,7 +20,7 @@ namespace iNFT.src {
 
         private readonly string localContractAddress = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
         private readonly string testContractAddress = "";
-        private readonly string prodContractAddress = null;
+        private readonly string prodContractAddress = "";
 
         private readonly BigInteger localChainID = 5777;
         private readonly BigInteger testChainID = 3;
@@ -58,12 +58,12 @@ namespace iNFT.src {
             /// <summary>
             /// Local account 
             /// </summary>
-            LOCAL,
+            Local,
 
             /// <summary>
             /// Test account 
             /// </summary>
-            ROPSTEN,
+            Ropsten,
 
             /// <summary>
             /// Production account 
@@ -115,13 +115,13 @@ namespace iNFT.src {
         public void SetEnvironment(Crypto env) {
             this.chain = env;
             switch (env) {
-                case Crypto.LOCAL:
+                case Crypto.Local:
                     this.envWeb3 = this.localWeb3;
                     this.EnvContractAccount = this.localContractAddress;
                     this.envAddress = localNetAddress;
                     this.envChainID = this.localChainID;
                     break;
-                case Crypto.ROPSTEN:
+                case Crypto.Ropsten:
                     this.envWeb3 = this.testNet;
                     this.EnvContractAccount = this.testContractAddress;
                     this.envAddress = testNetAddress;

@@ -1,4 +1,5 @@
 ﻿using iNFT.src;
+using iNFT.src.helper_functions;
 using iNFT.src.Logger;
 using iNFT.src.Toaster;
 using Microsoft.Win32;
@@ -19,9 +20,6 @@ namespace iNFT {
 
         private readonly Toaster toast = new Toaster();
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();
-        private readonly IPFS_Interact IPFS = new IPFS_Interact();
-        private bool? hasMinted = null;
-        private string IPFS_Hash = "";
 
         /// <summary>
         /// MainWindow
@@ -35,6 +33,8 @@ namespace iNFT {
         }
 
         /*=============================Logon Block================================*/
+
+        private decimal userBalance = -1M;
 
         private void InitializeLogonWindow() {
             this.FilePathTextBox.Text = this.FileNameTextBox.Text = "";
@@ -113,8 +113,15 @@ namespace iNFT {
                 Log.ErrorLog(e);
             }
         }
-
-        private decimal userBalance = -1M;
+        private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
+            if (this.EnvironmentComboBox.SelectedIndex == -1) {
+            } else if (this.EnvironmentComboBox.SelectedIndex == 2) {
+                this.toast.PopToastie("The Main Network contract has not been deployed", ToastColors.WARNING, 2);
+                this.EnvironmentComboBox.SelectedIndex = -1;
+            } else {
+                this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
+            }
+        }
 
         /*=============================Logon Block================================*/
 
@@ -143,6 +150,12 @@ namespace iNFT {
         /*==========================Transfer Block================================*/
 
         /*==============================Main Block================================*/
+
+        private List<string>[] nftList;
+        private string filePath = "";
+        private readonly IPFS_Interact IPFS = new IPFS_Interact();
+        private bool? hasMinted = null;
+        private string IPFS_Hash = "";
 
         private void InitializeMainWindow() {
             this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
@@ -189,15 +202,10 @@ namespace iNFT {
             this.nftList = await this.etherium.TokenList();
         }
 
-        private List<string>[] nftList;
-
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog fileName = new OpenFileDialog();
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
         }
-
-
-
 
         private void DisplayImage() {
             try {
@@ -208,11 +216,10 @@ namespace iNFT {
                 bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.UriSource = new Uri(this.filePath);
-                bitmap.EndInit(); 
-
+                bitmap.EndInit();
                 this.ImageNFTDisplay.Source = bitmap;
-            } catch (Exception exc) {
-                Log.ErrorLog(exc);
+            } catch (Exception e) {
+                Log.ErrorLog(e);
             }
         }
 
@@ -226,8 +233,6 @@ namespace iNFT {
             }
         }
 
-        private string filePath = "";
-
         private async void SetFileName() {
             try {
                 this.filePath = await this.IPFS.GetIPFSFile(this.filePath) ? this.IPFS.FileName : "false";
@@ -236,6 +241,7 @@ namespace iNFT {
                 Log.ErrorLog(e);
             }
         }
+
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (this.NFTComboBox.SelectedIndex == -1) {
                 this.filePath = this.FilePathTextBox.Text = "";
@@ -275,10 +281,11 @@ namespace iNFT {
             this.NFTComboBox.SelectedIndex = -1;
             this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
             if (File.Exists(this.FileNameTextBox.Text)) {
-                if (IPFS_Interact.Image_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                string ext = IPFS_Interact.GetTypeByPathFromByteCode(this.FileNameTextBox.Text).ToLower();
+                if (IPFS_Interact.Image_File_Types.Contains(ext)) {
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayImage();
-                } else if (IPFS_Interact.Text_File_Types.Contains(this.FileNameTextBox.Text.Split(".")[^1].ToLower())) {
+                } else if (IPFS_Interact.Text_File_Types.Contains(ext)) {
                     this.filePath = this.FileNameTextBox.Text;
                     this.DisplayText();
                 } else {
@@ -349,10 +356,6 @@ namespace iNFT {
 
         private void Copy_to_Clipboard_Click(object sender, RoutedEventArgs e) {
             Clipboard.SetText(this.filePath);
-        }
-
-        private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
-            this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
         }
 
         /*==============================Main Block================================*/

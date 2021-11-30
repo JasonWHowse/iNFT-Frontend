@@ -11,13 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="src\Images\Background.png" />
     <None Remove="TempAccounts.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="build\contracts\" />
     <Folder Include="contracts\" />
+    <Folder Include="Resources\" />
     <Folder Include="test\" />
   </ItemGroup>
 
@@ -29,10 +29,6 @@
     <PackageReference Include="Nethereum.Web3" Version="4.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="xunit.assert" Version="2.4.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="src\Images\Background.png" />
   </ItemGroup>
 
 </Project>
