@@ -15,30 +15,21 @@ namespace iNFT.src {
     public class Ethereum_Interact {
 
         private static readonly string localNetAddress = "HTTP://127.0.0.1:7545";
-        private static readonly string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
         private static readonly string prodNetAddress = "https://mainnet.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
-
-        private readonly string localContractAddress = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
-        private readonly string testContractAddress = "";
-        private readonly string prodContractAddress = "";
-
+        private static readonly string testNetAddress = "https://ropsten.infura.io/v3/c403a4afb4f5439588595f1f242e7c75";
         private readonly BigInteger localChainID = 5777;
-        private readonly BigInteger testChainID = 3;
         private readonly BigInteger prodChainID = 1;
-
+        private readonly BigInteger testChainID = 3;
+        private readonly string localContractAddress = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
+        private readonly string prodContractAddress = "";
+        private readonly string testContractAddress = "";
         private readonly Web3 localWeb3;
-        private readonly Web3 testNet;
         private readonly Web3 prodNet;
-
-        private Web3 envWeb3;
-        private string envAddress;
+        private readonly Web3 testNet;
 
         private Account account;
-
-        /// <summary>
-        /// Account address associated with the contract
-        /// </summary>
-        public string EnvContractAccount { get; private set; }
+        private Web3 envWeb3;
+        private string envAddress;
 
         /// <summary>
         /// Current Environment Network ID/Chain ID
@@ -72,6 +63,11 @@ namespace iNFT.src {
         }
 
         /// <summary>
+        /// Account address associated with the contract
+        /// </summary>
+        public string EnvContractAccount { get; private set; }
+
+        /// <summary>
         /// Initializes the web3 contracts for each environment
         /// </summary>
         public Ethereum_Interact() {
@@ -93,6 +89,97 @@ namespace iNFT.src {
         }
 
         /// <summary>
+        /// Constructor that sets the environment variables
+        /// </summary>
+        /// <param name="env"></param>
+        public Ethereum_Interact(Crypto env) : this() {
+            this.SetEnvironment(env);
+        }
+        /// <summary>
+        /// Returns a boolean based on whether or not the Address has a Token at a particular index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public async Task<bool> CheckAccountByIndex(int index) {
+            try {
+                return this.account.Address.Equals((await this.GetContract().GetFunction(
+                    "ownerOf").CallAsync<object>(new object[] { index })).ToString());
+            } catch (Exception e) {
+                Log.ErrorLog(e);
+                return false;
+            }
+        }
+                /// <summary>
+        /// Attempts to post a token to the block chain network and returns true if its successful
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns></returns>
+        public async Task<bool> Mint(string hash) {
+            try {
+                HexBigInteger gas = new HexBigInteger(new BigInteger(400000));
+                HexBigInteger value = new HexBigInteger(new BigInteger(0));
+                Contract cont = this.GetContract();
+                Function setFunct = cont.GetFunction("mint");
+                object[] parameters = { this.account.Address, hash };
+                this.envWeb3.TransactionManager.UseLegacyAsDefault = true;
+                string transaction = await setFunct.SendTransactionAsync(this.account.Address, gas, value, parameters);
+
+                Log.InfoLog(transaction);
+                return true;
+            } catch (Exception e) {
+                Log.ErrorLog(e);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Sets the current environment and address to the appropriate private key
+        /// return the account balance associated with the account
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <returns></returns>
+        public async Task<decimal> CheckUserName(string privateKey) {
+            this.account = new Account(privateKey, this.envChainID);
+            this.envWeb3 = new Web3(this.account, this.envAddress);
+            return await this.GetAccountBalance(this.account.Address);
+        }
+
+        /// <summary>
+        /// Returns address account
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public async Task<decimal> GetAccountBalance(string address) {
+            return Web3.Convert.FromWei(await this.envWeb3.Eth.GetBalance.SendRequestAsync(address));
+        }
+
+        /// <summary>
+        /// Returns all tokens associated with a particular account
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>[]> TokenList() {
+            if (this.account == null) {
+                return null;
+            }
+            List<string>[] list = new List<string>[] { new List<string>(), new List<string>(), new List<string>() };
+            for (int index = 1; index > 0; index++) {
+                try {
+                    string tempAddress = (await this.GetContract().GetFunction(
+                    "ownerOf").CallAsync<object>(new object[] { index })).ToString();
+                    if (this.account.Address.Equals(tempAddress)) {
+                        list[0].Add(index.ToString());
+                        string url = (await this.GetContract().GetFunction(
+                    "tokenURI").CallAsync<object>(new object[] { index })).ToString();
+                        list[1].Add(url);
+                        list[2].Add(url.Split("/")[^1]);
+                    }
+                } catch (Exception) {
+                    index = -100;
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
         /// return bool if the Account variable is null.
         /// </summary>
         /// <returns></returns>
@@ -101,11 +188,20 @@ namespace iNFT.src {
         }
 
         /// <summary>
-        /// Constructor that sets the environment variables
+        /// Gets the Contract detail
         /// </summary>
-        /// <param name="env"></param>
-        public Ethereum_Interact(Crypto env) : this() {
-            this.SetEnvironment(env);
+        /// <returns></returns>
+        public Contract GetContract() {
+            return this.envWeb3.Eth.GetContract(Contract_Details.NFT_ABI, this.EnvContractAccount);
+        }
+
+        /// <summary>
+        /// logs user out by destroying environments
+        /// </summary>
+        public void Logout() {
+            this.account = null;
+            this.envWeb3 = null;
+            this.SetEnvironment(this.chain);
         }
 
         /// <summary>
@@ -135,109 +231,6 @@ namespace iNFT.src {
                     break;
                 default:
                     break;
-            }
-        }
-
-        /// <summary>
-        /// Returns address account
-        /// </summary>
-        /// <param name="address"></param>
-        /// <returns></returns>
-        public async Task<decimal> GetAccountBalance(string address) {
-            return Web3.Convert.FromWei(await this.envWeb3.Eth.GetBalance.SendRequestAsync(address));
-        }
-
-        /// <summary>
-        /// Gets the Contract detail
-        /// </summary>
-        /// <returns></returns>
-        public Contract GetContract() {
-            return this.envWeb3.Eth.GetContract(Contract_Details.NFT_ABI, this.EnvContractAccount);
-        }
-
-        /// <summary>
-        /// Sets the current environment and address to the appropriate private key
-        /// return the account balance associated with the account
-        /// </summary>
-        /// <param name="privateKey"></param>
-        /// <returns></returns>
-        public async Task<decimal> CheckUserName(string privateKey) {
-            this.account = new Account(privateKey, this.envChainID);
-            this.envWeb3 = new Web3(this.account, this.envAddress);
-            return await this.GetAccountBalance(this.account.Address);
-        }
-
-        /// <summary>
-        /// logs user out by destroying environments
-        /// </summary>
-        public void Logout() {
-            this.account = null;
-            this.envWeb3 = null;
-            this.SetEnvironment(this.chain);
-        }
-
-        /// <summary>
-        /// Returns all tokens associated with a particular account
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<string>[]> TokenList() {
-            if(this.account == null) {
-                return null;
-            }
-            List<string>[] list = new List<string>[] { new List<string>(), new List<string>(), new List<string>() };
-            for (int index = 1; index > 0; index++) {
-                try {
-                    string tempAddress = (await this.GetContract().GetFunction(
-                    "ownerOf").CallAsync<object>(new object[] { index })).ToString();
-                    if (this.account.Address.Equals(tempAddress)) {
-                        list[0].Add(index.ToString());
-                        string url = (await this.GetContract().GetFunction(
-                    "tokenURI").CallAsync<object>(new object[] { index })).ToString();
-                        list[1].Add(url);
-                        list[2].Add(url.Split("/")[^1]);
-                    }
-                } catch (Exception) {
-                    index = -100;
-                }
-            }
-            return list;
-        }
-
-        /// <summary>
-        /// Returns a boolean based on whether or not the Address has a Token at a particular index
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public async Task<bool> CheckAccountByIndex(int index) {
-            try {
-                return this.account.Address.Equals((await this.GetContract().GetFunction(
-                    "ownerOf").CallAsync<object>(new object[] { index })).ToString());
-            } catch (Exception e) {
-                Log.ErrorLog(e);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Attempts to post a token to the block chain network and returns true if its successful
-        /// </summary>
-        /// <param name="hash"></param>
-        /// <returns></returns>
-        public async Task<bool> Mint(string hash) {
-            try {
-                HexBigInteger gas = new HexBigInteger(new BigInteger(400000));
-                HexBigInteger value = new HexBigInteger(new BigInteger(0));
-                Contract cont = this.GetContract();
-                Function setFunct = cont.GetFunction("mint");
-                object[] parameters = { this.account.Address, hash };
-                this.envWeb3.TransactionManager.UseLegacyAsDefault = true;
-                string transaction = await setFunct.SendTransactionAsync(this.account.Address, gas, value, parameters);
-
-                Log.InfoLog(transaction);
-                return true;
-            } catch (Exception e) {
-                Log.ErrorLog(e);
-                return false;
             }
         }
     }
