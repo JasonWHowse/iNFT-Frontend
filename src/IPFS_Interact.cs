@@ -15,18 +15,8 @@ namespace iNFT.src {
         private readonly IpfsClient defaultGateway = new IpfsClient("https://ipfs.infura.io:5001");
 
         private readonly IpfsClient gateway;
-        private readonly string storePath;
         private readonly string storeFileName;
-
-        /// <summary>
-        /// FileName used to store the IPFS file locally
-        /// </summary>
-        public string FileName { private set; get; }
-
-        /// <summary>
-        /// The files extentsion as determined by mime
-        /// </summary>
-        public string Ext { private set; get; }
+        private readonly string storePath;
 
         /// <summary>
         /// Approved Image file types
@@ -37,6 +27,16 @@ namespace iNFT.src {
         /// Approved Raw Text file types
         /// </summary>
         public static readonly HashSet<string> Text_File_Types = new HashSet<string> { "txt", "html", "xml", "css", "js", "htm", "json" };
+
+        /// <summary>
+        /// The files extentsion as determined by mime
+        /// </summary>
+        public string Ext { private set; get; }
+
+        /// <summary>
+        /// FileName used to store the IPFS file locally
+        /// </summary>
+        public string FileName { private set; get; }
 
         /// <summary>
         /// Basic Contructor
@@ -72,24 +72,26 @@ namespace iNFT.src {
             this.storeFileName = storeFileName;
         }
 
-        /// <summary>
-        /// Gets the Extension determined by the bytecode of the file
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static string GetTypeByPathFromByteCode(string path) {
-            try {
-                byte[] byteFile = File.ReadAllBytes(path);
-                return MimeGuesser.GuessFileType(byteFile).Extension;
-            } catch (Exception) {
-                return "";
-            }
-        }
-
         private byte[] StreamToByteArray(Stream input) {
             MemoryStream ms = new MemoryStream();
             input.CopyTo(ms);
             return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Deletes all local storage files
+        /// </summary>
+        public void DeleteFile() {
+            string[] files = Directory.GetFiles(this.storePath);
+            for (int i = 0; i < files.Length; i++) {
+                if (files[i].Split(@"\")[^1].Contains(this.storeFileName)) {
+                    try {
+                        File.Delete(files[i]);
+                    } catch (Exception e) {
+                        Log.ErrorLog(e);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -135,18 +137,16 @@ namespace iNFT.src {
         }
 
         /// <summary>
-        /// Deletes all local storage files
+        /// Gets the Extension determined by the bytecode of the file
         /// </summary>
-        public void DeleteFile() {
-            string[] files = Directory.GetFiles(this.storePath);
-            for (int i = 0; i < files.Length; i++) {
-                if (files[i].Split(@"\")[^1].Contains(this.storeFileName)) {
-                    try {
-                        File.Delete(files[i]);
-                    } catch (Exception e) {
-                        Log.ErrorLog(e);
-                    }
-                }
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetTypeByPathFromByteCode(string path) {
+            try {
+                byte[] byteFile = File.ReadAllBytes(path);
+                return MimeGuesser.GuessFileType(byteFile).Extension;
+            } catch (Exception) {
+                return "";
             }
         }
     }

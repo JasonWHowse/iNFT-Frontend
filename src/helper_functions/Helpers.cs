@@ -5,7 +5,10 @@ using System;
 using System.IO;
 
 namespace iNFT.src.helper_functions {
-    class Helpers {
+    /// <summary>
+    /// Helper functions to help accomplish different goals
+    /// </summary>
+    public class Helpers {
         /// <summary>
         /// Attemps to get a manipulatable JObject from a json file, full path accepted
         /// </summary>

@@ -1,5 +1,4 @@
 ﻿using iNFT.src;
-using iNFT.src.helper_functions;
 using iNFT.src.Logger;
 using iNFT.src.Toaster;
 using Microsoft.Win32;
@@ -18,8 +17,8 @@ using static iNFT.src.Toaster.Toaster;
 namespace iNFT {
     public partial class MainWindow : Window {
 
-        private readonly Toaster toast = new Toaster();
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();
+        private readonly Toaster toast = new Toaster();
 
         /// <summary>
         /// MainWindow
@@ -36,6 +35,25 @@ namespace iNFT {
 
         private decimal userBalance = -1M;
 
+        private async void CheckLogin() {
+            try {
+                this.userBalance = await this.etherium.CheckUserName(this.UsernamePrivateKeyTextBox.Password);
+            } catch (Exception e) {
+                this.userBalance = -2M;
+                Log.ErrorLog(e);
+            }
+        }
+
+        private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
+            if (this.EnvironmentComboBox.SelectedIndex == -1) {
+            } else if (this.EnvironmentComboBox.SelectedIndex == 2) {
+                this.toast.PopToastie("The Main Network contract has not been deployed", ToastColors.WARNING, 2);
+                this.EnvironmentComboBox.SelectedIndex = -1;
+            } else {
+                this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
+            }
+        }
+
         private void InitializeLogonWindow() {
             this.FilePathTextBox.Text = this.FileNameTextBox.Text = "";
             this.FileNameTextBox.Visibility = Visibility.Hidden;
@@ -49,7 +67,6 @@ namespace iNFT {
             this.FilePathTextBox.Visibility = Visibility.Hidden;
             this.LogoutButton.Visibility = Visibility.Hidden;
             this.EnvironmentComboBox.Visibility = Visibility.Hidden;
-
 
             Application.Current.MainWindow.Width = 400;
             Application.Current.MainWindow.MinWidth = 400;
@@ -105,24 +122,6 @@ namespace iNFT {
             this.InitializeMainWindow();
         }
 
-        private async void CheckLogin() {
-            try {
-                this.userBalance = await this.etherium.CheckUserName(this.UsernamePrivateKeyTextBox.Password);
-            } catch (Exception e) {
-                this.userBalance = -2M;
-                Log.ErrorLog(e);
-            }
-        }
-        private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
-            if (this.EnvironmentComboBox.SelectedIndex == -1) {
-            } else if (this.EnvironmentComboBox.SelectedIndex == 2) {
-                this.toast.PopToastie("The Main Network contract has not been deployed", ToastColors.WARNING, 2);
-                this.EnvironmentComboBox.SelectedIndex = -1;
-            } else {
-                this.etherium.SetEnvironment((Crypto)this.EnvironmentComboBox.SelectedIndex);
-            }
-        }
-
         /*=============================Logon Block================================*/
 
         /*==========================Transfer Block================================*/
@@ -151,55 +150,41 @@ namespace iNFT {
 
         /*==============================Main Block================================*/
 
-        private List<string>[] nftList;
-        private string filePath = "";
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
         private bool? hasMinted = null;
+        private List<string>[] nftList;
+        private string filePath = "";
         private string IPFS_Hash = "";
-
-        private void InitializeMainWindow() {
-            this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
-            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
-            this.LoginButton.Visibility = Visibility.Hidden;
-            this.EnvironmentComboBox.Visibility = Visibility.Hidden;
-            this.EnvironmentLabel.Visibility = Visibility.Hidden;
-
-            this.ImageNFTDisplay.Visibility = Visibility.Hidden;
-            this.TextNFTDisplay.Visibility = Visibility.Hidden;
-            this.MintButton.Visibility = Visibility.Hidden;
-            //this.TransferButton.Visibility = Visibility.Hidden;
-            this.FilePathTextBox.Visibility = Visibility.Hidden;
-            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
-
-            this.FileNameTextBox.Visibility = Visibility.Visible;
-            this.BrowseButton.Visibility = Visibility.Visible;
-            this.NFTComboBox.Visibility = Visibility.Visible;
-            this.LogoutButton.Visibility = Visibility.Visible;
-
-            Application.Current.MainWindow.Width = 800;
-            Application.Current.MainWindow.MinWidth = 800;
-            Application.Current.MainWindow.MaxWidth = 800;
-            Application.Current.MainWindow.Height = 450;
-            Application.Current.MainWindow.MinHeight = 450;
-            Application.Current.MainWindow.MaxHeight = 450;
-        }
-
-        private void SetNFTComboBox() {
-            this.nftList = null;
-            if (etherium.AccountIsNull()) {
-                this.NFTComboBox.ItemsSource = null;
-                return;
-            }
-            _ = Task.Run(this.GetTokens);
-            while (this.nftList == null) {
-                Thread.Sleep(500);
-            }
-            this.NFTComboBox.ItemsSource = this.nftList[2];
-            this.NFTComboBox.IsEnabled = true;
-        }
 
         private async void GetTokens() {
             this.nftList = await this.etherium.TokenList();
+        }
+
+        private async void Mint() {
+            try {
+                this.hasMinted = await this.etherium.Mint(this.IPFS_Hash);
+            } catch (Exception e) {
+                Log.ErrorLog(e);
+                this.hasMinted = false;
+            }
+        }
+
+        private async void PostFileToIPFS() {
+            try {
+                this.IPFS_Hash = await this.IPFS.SetFileToIPFS(this.filePath);
+            } catch (Exception e) {
+                this.IPFS_Hash = "";
+                Log.ErrorLog(e);
+            }
+        }
+
+        private async void SetFileName() {
+            try {
+                this.filePath = await this.IPFS.GetIPFSFile(this.filePath) ? this.IPFS.FileName : "false";
+            } catch (Exception e) {
+                this.filePath = "false";
+                Log.ErrorLog(e);
+            }
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
@@ -233,12 +218,89 @@ namespace iNFT {
             }
         }
 
-        private async void SetFileName() {
-            try {
-                this.filePath = await this.IPFS.GetIPFSFile(this.filePath) ? this.IPFS.FileName : "false";
-            } catch (Exception e) {
-                this.filePath = "false";
-                Log.ErrorLog(e);
+        private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
+            this.NFTComboBox.SelectedIndex = -1;
+            this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
+            if (File.Exists(this.FileNameTextBox.Text)) {
+                string ext = IPFS_Interact.GetTypeByPathFromByteCode(this.FileNameTextBox.Text).ToLower();
+                if (IPFS_Interact.Image_File_Types.Contains(ext)) {
+                    this.filePath = this.FileNameTextBox.Text;
+                    this.DisplayImage();
+                } else if (IPFS_Interact.Text_File_Types.Contains(ext)) {
+                    this.filePath = this.FileNameTextBox.Text;
+                    this.DisplayText();
+                } else {
+                    this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+                    this.TextNFTDisplay.Visibility = Visibility.Hidden;
+                }
+            } else {
+                this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+                this.TextNFTDisplay.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void InitializeMainWindow() {
+            this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
+            this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
+            this.LoginButton.Visibility = Visibility.Hidden;
+            this.EnvironmentComboBox.Visibility = Visibility.Hidden;
+            this.EnvironmentLabel.Visibility = Visibility.Hidden;
+
+            this.ImageNFTDisplay.Visibility = Visibility.Hidden;
+            this.TextNFTDisplay.Visibility = Visibility.Hidden;
+            this.MintButton.Visibility = Visibility.Hidden;
+            //this.TransferButton.Visibility = Visibility.Hidden;
+            this.FilePathTextBox.Visibility = Visibility.Hidden;
+            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
+
+            this.FileNameTextBox.Visibility = Visibility.Visible;
+            this.BrowseButton.Visibility = Visibility.Visible;
+            this.NFTComboBox.Visibility = Visibility.Visible;
+            this.LogoutButton.Visibility = Visibility.Visible;
+
+            Application.Current.MainWindow.Width = 800;
+            Application.Current.MainWindow.MinWidth = 800;
+            Application.Current.MainWindow.MaxWidth = 800;
+            Application.Current.MainWindow.Height = 450;
+            Application.Current.MainWindow.MinHeight = 450;
+            Application.Current.MainWindow.MaxHeight = 450;
+        }
+
+        private void Logout_Button_Click(object sender, RoutedEventArgs e) {
+            this.etherium.Logout();
+            this.InitializeLogonWindow();
+        }
+
+        private void Mint_Button_Click(object sender, RoutedEventArgs e) {
+            this.hasMinted = null;
+            this.filePath = this.FileNameTextBox.Text;
+            if (File.Exists(this.FileNameTextBox.Text)) {
+                this.IPFS_Hash = "Waiting";
+                Task.Run(this.PostFileToIPFS).Wait();
+                while (this.IPFS_Hash.Equals("Waiting")) {
+                    Thread.Sleep(500);
+                }
+                if (this.IPFS_Hash.Length != 0) {
+                    Log.InfoLog("https://gateway.ipfs.io/ipfs/" + this.IPFS_Hash);
+
+                    Task.Run(this.Mint).Wait();
+                    while (this.hasMinted == null) {
+                        Thread.Sleep(500);
+                    }
+
+                    if (this.hasMinted == true) {
+                        this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
+                    } else {
+                        this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
+                    }
+                } else {
+                    this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
+                }
+
+                this.SetNFTComboBox();
+                this.FileNameTextBox.Text = "";
+            } else {
+                this.toast.PopToastie("No Such File Exists", ToastColors.ERROR, 2);
             }
         }
 
@@ -277,81 +339,18 @@ namespace iNFT {
             }
         }
 
-        private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
-            this.NFTComboBox.SelectedIndex = -1;
-            this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
-            if (File.Exists(this.FileNameTextBox.Text)) {
-                string ext = IPFS_Interact.GetTypeByPathFromByteCode(this.FileNameTextBox.Text).ToLower();
-                if (IPFS_Interact.Image_File_Types.Contains(ext)) {
-                    this.filePath = this.FileNameTextBox.Text;
-                    this.DisplayImage();
-                } else if (IPFS_Interact.Text_File_Types.Contains(ext)) {
-                    this.filePath = this.FileNameTextBox.Text;
-                    this.DisplayText();
-                } else {
-                    this.ImageNFTDisplay.Visibility = Visibility.Hidden;
-                    this.TextNFTDisplay.Visibility = Visibility.Hidden;
-                }
-            } else {
-                this.ImageNFTDisplay.Visibility = Visibility.Hidden;
-                this.TextNFTDisplay.Visibility = Visibility.Hidden;
+        private void SetNFTComboBox() {
+            this.nftList = null;
+            if (etherium.AccountIsNull()) {
+                this.NFTComboBox.ItemsSource = null;
+                return;
             }
-        }
-
-        private async void PostFileToIPFS() {
-            try {
-                this.IPFS_Hash = await this.IPFS.SetFileToIPFS(this.filePath);
-            } catch (Exception e) {
-                this.IPFS_Hash = "";
-                Log.ErrorLog(e);
+            _ = Task.Run(this.GetTokens);
+            while (this.nftList == null) {
+                Thread.Sleep(500);
             }
-        }
-
-        private async void Mint() {
-            try {
-                this.hasMinted = await this.etherium.Mint(this.IPFS_Hash);
-            } catch (Exception e) {
-                Log.ErrorLog(e);
-                this.hasMinted = false;
-            }
-        }
-
-        private void Mint_Button_Click(object sender, RoutedEventArgs e) {
-            this.hasMinted = null;
-            this.filePath = this.FileNameTextBox.Text;
-            if (File.Exists(this.FileNameTextBox.Text)) {
-                this.IPFS_Hash = "Waiting";
-                Task.Run(this.PostFileToIPFS).Wait();
-                while (this.IPFS_Hash.Equals("Waiting")) {
-                    Thread.Sleep(500);
-                }
-                if (this.IPFS_Hash.Length != 0) {
-                    Log.InfoLog("https://gateway.ipfs.io/ipfs/" + this.IPFS_Hash);
-
-                    Task.Run(this.Mint).Wait();
-                    while (this.hasMinted == null) {
-                        Thread.Sleep(500);
-                    }
-
-                    if (this.hasMinted == true) {
-                        this.toast.PopToastie("Token Successfully Minted", ToastColors.PRIMARY, 5);
-                    } else {
-                        this.toast.PopToastie("Token Failed to Mint", ToastColors.ERROR, 5);
-                    }
-                } else {
-                    this.toast.PopToastie("Failed to Post to IPFS", ToastColors.ERROR, 2);
-                }
-
-                this.SetNFTComboBox();
-                this.FileNameTextBox.Text = "";
-            } else {
-                this.toast.PopToastie("No Such File Exists", ToastColors.ERROR, 2);
-            }
-        }
-
-        private void Logout_Button_Click(object sender, RoutedEventArgs e) {
-            this.etherium.Logout();
-            this.InitializeLogonWindow();
+            this.NFTComboBox.ItemsSource = this.nftList[2];
+            this.NFTComboBox.IsEnabled = true;
         }
 
         private void Copy_to_Clipboard_Click(object sender, RoutedEventArgs e) {

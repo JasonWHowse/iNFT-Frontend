@@ -10,9 +10,9 @@ namespace iNFT.src.Logger {
     /// </summary>
     public class Log {
 
-        private static string _fileName;
         private static bool reportingErrors = true;
         private static bool reportingWarnings = true;
+        private static string _fileName;
 
         /// <summary>
         /// Sets the beginning of a log Set or can be used to mark a new log 
@@ -31,27 +31,17 @@ namespace iNFT.src.Logger {
         /// Generates Info log entry on the log file.
         /// </summary>
         /// <param name="message"></param>
-        public static void InfoLog(string message) {
-            LogMessage("INFO", message);
-        }
-
-        /// <summary>
-        /// Generates Info log entry on the log file.
-        /// </summary>
-        /// <param name="message"></param>
         public static void InfoLog(object message) {
             LogMessage("INFO", message.ToString());
         }//public static void InfoLog(object message) {
 
         /// <summary>
-        /// Generates Warning log entry on the log file.
+        /// Generates Info log entry on the log file.
         /// </summary>
         /// <param name="message"></param>
-        public static void WarningLog(string message) {
-            if (reportingWarnings) {
-                LogMessage("WARNING", message);
-            }//if (reportingWarnings) {
-        }//public static void WarningLog(string message) {
+        public static void InfoLog(string message) {
+            LogMessage("INFO", message);
+        }//public static void InfoLog(string message) {
 
         /// <summary>
         /// Generates Warning log entry on the log file.
@@ -64,14 +54,25 @@ namespace iNFT.src.Logger {
         }//public static void WarningLog(object message) {
 
         /// <summary>
-        /// Generates Error log entry on the log file.
+        /// Generates Warning log entry on the log file.
         /// </summary>
         /// <param name="message"></param>
-        public static void ErrorLog(string message) {
+        public static void WarningLog(string message) {
+            if (reportingWarnings) {
+                LogMessage("WARNING", message);
+            }//if (reportingWarnings) {
+        }//public static void WarningLog(string message) {
+
+        /// <summary>
+        /// Generates Error log entry on the log file.
+        /// </summary>
+        /// <param name="e"></param>
+        public static void ErrorLog(Exception e) {
             if (reportingErrors) {
-                LogMessage("ERROR", message);
+                ErrorLog(e.Message.ToString());
+                ErrorLog(e.StackTrace.ToString());
             }//if (reportingErrors) {
-        }//public static void ErrorLog(string message) {
+        }//internal static void ErrorLog(Exception e) {
 
         /// <summary>
         /// Generates Error log entry on the log file.
@@ -86,13 +87,12 @@ namespace iNFT.src.Logger {
         /// <summary>
         /// Generates Error log entry on the log file.
         /// </summary>
-        /// <param name="e"></param>
-        internal static void ErrorLog(Exception e) {
+        /// <param name="message"></param>
+        public static void ErrorLog(string message) {
             if (reportingErrors) {
-                ErrorLog(e.Message.ToString());
-                ErrorLog(e.StackTrace.ToString());
+                LogMessage("ERROR", message);
             }//if (reportingErrors) {
-        }//internal static void ErrorLog(Exception e) {
+        }//public static void ErrorLog(string message) {
 
         /// <summary>
         /// Deletes all text from the current log file.
