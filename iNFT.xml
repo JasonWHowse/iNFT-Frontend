@@ -83,11 +83,6 @@
             Class to interact with the nft Contract
             </summary>
         </member>
-        <member name="P:iNFT.src.Ethereum_Interact.EnvContractAccount">
-            <summary>
-            Account address associated with the contract
-            </summary>
-        </member>
         <member name="F:iNFT.src.Ethereum_Interact.envChainID">
             <summary>
             Current Environment Network ID/Chain ID
@@ -118,60 +113,21 @@
             Production account 
             </summary>
         </member>
+        <member name="P:iNFT.src.Ethereum_Interact.EnvContractAccount">
+            <summary>
+            Account address associated with the contract
+            </summary>
+        </member>
         <member name="M:iNFT.src.Ethereum_Interact.#ctor">
             <summary>
             Initializes the web3 contracts for each environment
             </summary>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.AccountIsNull">
-            <summary>
-            return bool if the Account variable is null.
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:iNFT.src.Ethereum_Interact.#ctor(iNFT.src.Ethereum_Interact.Crypto)">
             <summary>
             Constructor that sets the environment variables
             </summary>
             <param name="env"></param>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.SetEnvironment(iNFT.src.Ethereum_Interact.Crypto)">
-            <summary>
-            Sets the environment variables based on locat, Ropsten, Main_Net
-            </summary>
-            <param name="env"></param>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.GetAccountBalance(System.String)">
-            <summary>
-            Returns address account
-            </summary>
-            <param name="address"></param>
-            <returns></returns>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.GetContract">
-            <summary>
-            Gets the Contract detail
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.CheckUserName(System.String)">
-            <summary>
-            Sets the current environment and address to the appropriate private key
-            return the account balance associated with the account
-            </summary>
-            <param name="privateKey"></param>
-            <returns></returns>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.Logout">
-            <summary>
-            logs user out by destroying environments
-            </summary>
-        </member>
-        <member name="M:iNFT.src.Ethereum_Interact.TokenList">
-            <summary>
-            Returns all tokens associated with a particular account
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:iNFT.src.Ethereum_Interact.CheckAccountByIndex(System.Int32)">
             <summary>
@@ -186,6 +142,55 @@
             </summary>
             <param name="hash"></param>
             <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.CheckUserName(System.String)">
+            <summary>
+            Sets the current environment and address to the appropriate private key
+            return the account balance associated with the account
+            </summary>
+            <param name="privateKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.GetAccountBalance(System.String)">
+            <summary>
+            Returns address account
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.TokenList">
+            <summary>
+            Returns all tokens associated with a particular account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.AccountIsNull">
+            <summary>
+            return bool if the Account variable is null.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.GetContract">
+            <summary>
+            Gets the Contract detail
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.Logout">
+            <summary>
+            logs user out by destroying environments
+            </summary>
+        </member>
+        <member name="M:iNFT.src.Ethereum_Interact.SetEnvironment(iNFT.src.Ethereum_Interact.Crypto)">
+            <summary>
+            Sets the environment variables based on locat, Ropsten, Main_Net
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="T:iNFT.src.helper_functions.Helpers">
+            <summary>
+            Helper functions to help accomplish different goals
+            </summary>
         </member>
         <member name="M:iNFT.src.helper_functions.Helpers.GetJsonObject(System.String)">
             <summary>
@@ -207,16 +212,6 @@
             Class to post and get items from the ipfs network
             </summary>
         </member>
-        <member name="P:iNFT.src.IPFS_Interact.FileName">
-            <summary>
-            FileName used to store the IPFS file locally
-            </summary>
-        </member>
-        <member name="P:iNFT.src.IPFS_Interact.Ext">
-            <summary>
-            The files extentsion as determined by mime
-            </summary>
-        </member>
         <member name="F:iNFT.src.IPFS_Interact.Image_File_Types">
             <summary>
             Approved Image file types
@@ -225,6 +220,16 @@
         <member name="F:iNFT.src.IPFS_Interact.Text_File_Types">
             <summary>
             Approved Raw Text file types
+            </summary>
+        </member>
+        <member name="P:iNFT.src.IPFS_Interact.Ext">
+            <summary>
+            The files extentsion as determined by mime
+            </summary>
+        </member>
+        <member name="P:iNFT.src.IPFS_Interact.FileName">
+            <summary>
+            FileName used to store the IPFS file locally
             </summary>
         </member>
         <member name="M:iNFT.src.IPFS_Interact.#ctor">
@@ -250,12 +255,10 @@
             Constructor to set gateway, storepath, and storeFileName
             </summary>
         </member>
-        <member name="M:iNFT.src.IPFS_Interact.GetTypeByPathFromByteCode(System.String)">
+        <member name="M:iNFT.src.IPFS_Interact.DeleteFile">
             <summary>
-            Gets the Extension determined by the bytecode of the file
+            Deletes all local storage files
             </summary>
-            <param name="path"></param>
-            <returns></returns>
         </member>
         <member name="M:iNFT.src.IPFS_Interact.GetIPFSFile(System.String)">
             <summary>
@@ -271,10 +274,12 @@
             <param name="path"></param>
             <returns></returns>
         </member>
-        <member name="M:iNFT.src.IPFS_Interact.DeleteFile">
+        <member name="M:iNFT.src.IPFS_Interact.GetTypeByPathFromByteCode(System.String)">
             <summary>
-            Deletes all local storage files
+            Gets the Extension determined by the bytecode of the file
             </summary>
+            <param name="path"></param>
+            <returns></returns>
         </member>
         <member name="T:iNFT.src.Logger.Log">
              <summary>
@@ -289,21 +294,15 @@
             set area
             </summary>
         </member>
-        <member name="M:iNFT.src.Logger.Log.InfoLog(System.String)">
-            <summary>
-            Generates Info log entry on the log file.
-            </summary>
-            <param name="message"></param>
-        </member>
         <member name="M:iNFT.src.Logger.Log.InfoLog(System.Object)">
             <summary>
             Generates Info log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.WarningLog(System.String)">
+        <member name="M:iNFT.src.Logger.Log.InfoLog(System.String)">
             <summary>
-            Generates Warning log entry on the log file.
+            Generates Info log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
@@ -313,15 +312,9 @@
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.String)">
+        <member name="M:iNFT.src.Logger.Log.WarningLog(System.String)">
             <summary>
-            Generates Error log entry on the log file.
-            </summary>
-            <param name="message"></param>
-        </member>
-        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.Object)">
-            <summary>
-            Generates Error log entry on the log file.
+            Generates Warning log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
@@ -330,6 +323,18 @@
             Generates Error log entry on the log file.
             </summary>
             <param name="e"></param>
+        </member>
+        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.Object)">
+            <summary>
+            Generates Error log entry on the log file.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.String)">
+            <summary>
+            Generates Error log entry on the log file.
+            </summary>
+            <param name="message"></param>
         </member>
         <member name="M:iNFT.src.Logger.Log.ClearLog">
             <summary>

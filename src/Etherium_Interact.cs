@@ -22,7 +22,7 @@ namespace iNFT.src {
         private readonly BigInteger testChainID = 3;
         private readonly string localContractAddress = "0x9801391dAc40C9DD4FBfFc55f5EC4c5b5fEeD51e";
         private readonly string prodContractAddress = "";
-        private readonly string testContractAddress = "";
+        private readonly string testContractAddress = "0x39DabC1a0E99B7A0b93A1894d1fa5c340bcd5a3A";
         private readonly Web3 localWeb3;
         private readonly Web3 prodNet;
         private readonly Web3 testNet;
@@ -116,7 +116,7 @@ namespace iNFT.src {
         /// <returns></returns>
         public async Task<bool> Mint(string hash) {
             try {
-                HexBigInteger gas = new HexBigInteger(new BigInteger(400000));
+                HexBigInteger gas = new HexBigInteger(new BigInteger(8000000));
                 HexBigInteger value = new HexBigInteger(new BigInteger(0));
                 Contract cont = this.GetContract();
                 Function setFunct = cont.GetFunction("mint");
@@ -162,6 +162,7 @@ namespace iNFT.src {
             }
             List<string>[] list = new List<string>[] { new List<string>(), new List<string>(), new List<string>() };
             for (int index = 1; index > 0; index++) {
+                
                 try {
                     string tempAddress = (await this.GetContract().GetFunction(
                     "ownerOf").CallAsync<object>(new object[] { index })).ToString();
