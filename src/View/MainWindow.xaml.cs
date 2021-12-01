@@ -1,6 +1,6 @@
 ﻿using iNFT.src;
-using iNFT.src.Logger;
-using iNFT.src.Toaster;
+using iNFT.src.Controller;
+using iNFT.src.Utilities;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using static iNFT.src.Ethereum_Interact;
-using static iNFT.src.Toaster.Toaster;
+using static iNFT.src.Utilities.Toaster;
 
-namespace iNFT {
+namespace iNFT.src.View {
     public partial class MainWindow : Window {
 
         private readonly Ethereum_Interact etherium = new Ethereum_Interact();

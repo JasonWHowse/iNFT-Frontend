@@ -1,10 +1,9 @@
-﻿using iNFT.src.Logger;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 
-namespace iNFT.src.helper_functions {
+namespace iNFT.src.Utilities {
     /// <summary>
     /// Helper functions to help accomplish different goals
     /// </summary>

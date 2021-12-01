@@ -1,12 +1,12 @@
 ﻿using HeyRed.Mime;
-using iNFT.src.Logger;
+using iNFT.src.Utilities;
 using Ipfs.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace iNFT.src {
+namespace iNFT.src.Controller {
 
     /// <summary>
     /// Class to post and get items from the ipfs network

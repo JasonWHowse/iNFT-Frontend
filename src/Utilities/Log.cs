@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace iNFT.src.Logger {
+namespace iNFT.src.Utilities {
 
     /// <summary>
     ///Creates a log file that is usable from anywhere in the program. 

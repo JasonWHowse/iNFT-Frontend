@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace iNFT.src.Toaster {
+namespace iNFT.src.Utilities {
 
     /// <summary>
     ///Highly modifiable class for generating toast messages
