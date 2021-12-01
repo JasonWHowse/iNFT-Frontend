@@ -1,4 +1,4 @@
-﻿namespace iNFT.src {
+﻿namespace iNFT.src.Model {
 
     /// <summary>
     /// Class for storeing hardcoded ABIs and Bytecode

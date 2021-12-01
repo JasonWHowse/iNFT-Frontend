@@ -1,4 +1,5 @@
-﻿using iNFT.src.Logger;
+﻿using iNFT.src.Model;
+using iNFT.src.Utilities;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;

@@ -22,62 +22,6 @@
             Application Entry Point.
             </summary>
         </member>
-        <member name="T:iNFT.MainWindow">
-            <summary>
-            MainWindow
-            </summary>
-        </member>
-        <member name="M:iNFT.MainWindow.#ctor">
-            <summary>
-            MainWindow
-            </summary>
-        </member>
-        <member name="M:iNFT.MainWindow.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="T:iNFT.src.Contract_Details">
-            <summary>
-            Class for storeing hardcoded ABIs and Bytecode
-            </summary>
-        </member>
-        <member name="F:iNFT.src.Contract_Details.NFT_ByteCode">
-            <summary>
-            ByteCode for NFT contract
-            </summary>
-        </member>
-        <member name="F:iNFT.src.Contract_Details.NFT_ABI">
-            <summary>
-            ABI for NFT contract
-            </summary>
-        </member>
-        <member name="F:iNFT.src.Contract_Details.iNFT_ByteCode">
-            <summary>
-            byte code for iNFT interface
-            </summary>
-        </member>
-        <member name="F:iNFT.src.Contract_Details.iNFT_ABI">
-            <summary>
-            ABI for iNFT interface
-            </summary>
-        </member>
-        <member name="T:iNFT.src.Deploy_Contract">
-            <summary>
-            Class to deploy contracts from abis and bytecode
-            </summary>
-        </member>
-        <member name="M:iNFT.src.Deploy_Contract.GetProjectPath">
-            <summary>
-            Gets the primary project path
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:iNFT.src.Deploy_Contract.Contract_Preparation">
-            <summary>
-            deploys a smart contract, a lot of variables need to be configured manually before using
-            </summary>
-        </member>
         <member name="T:iNFT.src.Ethereum_Interact">
             <summary>
             Class to interact with the nft Contract
@@ -187,19 +131,134 @@
             </summary>
             <param name="env"></param>
         </member>
-        <member name="T:iNFT.src.helper_functions.Helpers">
+        <member name="T:iNFT.src.Controller.IPFS_Interact">
+            <summary>
+            Class to post and get items from the ipfs network
+            </summary>
+        </member>
+        <member name="F:iNFT.src.Controller.IPFS_Interact.Image_File_Types">
+            <summary>
+            Approved Image file types
+            </summary>
+        </member>
+        <member name="F:iNFT.src.Controller.IPFS_Interact.Text_File_Types">
+            <summary>
+            Approved Raw Text file types
+            </summary>
+        </member>
+        <member name="P:iNFT.src.Controller.IPFS_Interact.Ext">
+            <summary>
+            The files extentsion as determined by mime
+            </summary>
+        </member>
+        <member name="P:iNFT.src.Controller.IPFS_Interact.FileName">
+            <summary>
+            FileName used to store the IPFS file locally
+            </summary>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.#ctor">
+            <summary>
+            Basic Contructor
+            </summary>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.#ctor(System.String)">
+            <summary>
+            Constructor to set gateway
+            </summary>
+            <param name="gateway"></param>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.#ctor(System.String,System.String)">
+            <summary>
+            Constructor to set gateway and storepath
+            </summary>
+            <param name="gateway"></param>
+            <param name="storePath"></param>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructor to set gateway, storepath, and storeFileName
+            </summary>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.DeleteFile">
+            <summary>
+            Deletes all local storage files
+            </summary>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.GetIPFSFile(System.String)">
+            <summary>
+            Gets an IPFS file and stores it locally
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.SetFileToIPFS(System.String)">
+            <summary>
+            Posts a file to IPFS
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Controller.IPFS_Interact.GetTypeByPathFromByteCode(System.String)">
+            <summary>
+            Gets the Extension determined by the bytecode of the file
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="T:iNFT.src.Model.Contract_Details">
+            <summary>
+            Class for storeing hardcoded ABIs and Bytecode
+            </summary>
+        </member>
+        <member name="F:iNFT.src.Model.Contract_Details.NFT_ByteCode">
+            <summary>
+            ByteCode for NFT contract
+            </summary>
+        </member>
+        <member name="F:iNFT.src.Model.Contract_Details.NFT_ABI">
+            <summary>
+            ABI for NFT contract
+            </summary>
+        </member>
+        <member name="F:iNFT.src.Model.Contract_Details.iNFT_ByteCode">
+            <summary>
+            byte code for iNFT interface
+            </summary>
+        </member>
+        <member name="F:iNFT.src.Model.Contract_Details.iNFT_ABI">
+            <summary>
+            ABI for iNFT interface
+            </summary>
+        </member>
+        <member name="T:iNFT.src.Utilities.Deploy_Contract">
+            <summary>
+            Class to deploy contracts from abis and bytecode
+            </summary>
+        </member>
+        <member name="M:iNFT.src.Utilities.Deploy_Contract.GetProjectPath">
+            <summary>
+            Gets the primary project path
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:iNFT.src.Utilities.Deploy_Contract.Contract_Preparation">
+            <summary>
+            deploys a smart contract, a lot of variables need to be configured manually before using
+            </summary>
+        </member>
+        <member name="T:iNFT.src.Utilities.Helpers">
             <summary>
             Helper functions to help accomplish different goals
             </summary>
         </member>
-        <member name="M:iNFT.src.helper_functions.Helpers.GetJsonObject(System.String)">
+        <member name="M:iNFT.src.Utilities.Helpers.GetJsonObject(System.String)">
             <summary>
             Attemps to get a manipulatable JObject from a json file, full path accepted
             </summary>
             <param name="fileNamepath"></param>
             <returns></returns>
         </member>
-        <member name="M:iNFT.src.helper_functions.Helpers.GetJsonObject(System.String,System.String)">
+        <member name="M:iNFT.src.Utilities.Helpers.GetJsonObject(System.String,System.String)">
             <summary>
             API for filename and path
             </summary>
@@ -207,218 +266,144 @@
             <param name="path"></param>
             <returns></returns>
         </member>
-        <member name="T:iNFT.src.IPFS_Interact">
-            <summary>
-            Class to post and get items from the ipfs network
-            </summary>
-        </member>
-        <member name="F:iNFT.src.IPFS_Interact.Image_File_Types">
-            <summary>
-            Approved Image file types
-            </summary>
-        </member>
-        <member name="F:iNFT.src.IPFS_Interact.Text_File_Types">
-            <summary>
-            Approved Raw Text file types
-            </summary>
-        </member>
-        <member name="P:iNFT.src.IPFS_Interact.Ext">
-            <summary>
-            The files extentsion as determined by mime
-            </summary>
-        </member>
-        <member name="P:iNFT.src.IPFS_Interact.FileName">
-            <summary>
-            FileName used to store the IPFS file locally
-            </summary>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.#ctor">
-            <summary>
-            Basic Contructor
-            </summary>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.#ctor(System.String)">
-            <summary>
-            Constructor to set gateway
-            </summary>
-            <param name="gateway"></param>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.#ctor(System.String,System.String)">
-            <summary>
-            Constructor to set gateway and storepath
-            </summary>
-            <param name="gateway"></param>
-            <param name="storePath"></param>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.#ctor(System.String,System.String,System.String)">
-            <summary>
-            Constructor to set gateway, storepath, and storeFileName
-            </summary>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.DeleteFile">
-            <summary>
-            Deletes all local storage files
-            </summary>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.GetIPFSFile(System.String)">
-            <summary>
-            Gets an IPFS file and stores it locally
-            </summary>
-            <param name="path"></param>
-            <returns></returns>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.SetFileToIPFS(System.String)">
-            <summary>
-            Posts a file to IPFS
-            </summary>
-            <param name="path"></param>
-            <returns></returns>
-        </member>
-        <member name="M:iNFT.src.IPFS_Interact.GetTypeByPathFromByteCode(System.String)">
-            <summary>
-            Gets the Extension determined by the bytecode of the file
-            </summary>
-            <param name="path"></param>
-            <returns></returns>
-        </member>
-        <member name="T:iNFT.src.Logger.Log">
+        <member name="T:iNFT.src.Utilities.Log">
              <summary>
             Creates a log file that is usable from anywhere in the program. 
             Only 1 logfile is useable at a time.  Use a StartLogger method
             to use a change the log file used.
              </summary>
         </member>
-        <member name="M:iNFT.src.Logger.Log.BeginningOfLog">
+        <member name="M:iNFT.src.Utilities.Log.BeginningOfLog">
             <summary>
             Sets the beginning of a log Set or can be used to mark a new log 
             set area
             </summary>
         </member>
-        <member name="M:iNFT.src.Logger.Log.InfoLog(System.Object)">
+        <member name="M:iNFT.src.Utilities.Log.InfoLog(System.Object)">
             <summary>
             Generates Info log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.InfoLog(System.String)">
+        <member name="M:iNFT.src.Utilities.Log.InfoLog(System.String)">
             <summary>
             Generates Info log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.WarningLog(System.Object)">
+        <member name="M:iNFT.src.Utilities.Log.WarningLog(System.Object)">
             <summary>
             Generates Warning log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.WarningLog(System.String)">
+        <member name="M:iNFT.src.Utilities.Log.WarningLog(System.String)">
             <summary>
             Generates Warning log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.Exception)">
+        <member name="M:iNFT.src.Utilities.Log.ErrorLog(System.Exception)">
             <summary>
             Generates Error log entry on the log file.
             </summary>
             <param name="e"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.Object)">
+        <member name="M:iNFT.src.Utilities.Log.ErrorLog(System.Object)">
             <summary>
             Generates Error log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.ErrorLog(System.String)">
+        <member name="M:iNFT.src.Utilities.Log.ErrorLog(System.String)">
             <summary>
             Generates Error log entry on the log file.
             </summary>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.ClearLog">
+        <member name="M:iNFT.src.Utilities.Log.ClearLog">
             <summary>
             Deletes all text from the current log file.
             </summary>
         </member>
-        <member name="M:iNFT.src.Logger.Log.GetFileName">
+        <member name="M:iNFT.src.Utilities.Log.GetFileName">
             <summary>
             Gets the file path and name of the current log file
             </summary>
             <returns></returns>
         </member>
-        <member name="M:iNFT.src.Logger.Log.GetLog">
+        <member name="M:iNFT.src.Utilities.Log.GetLog">
             <summary>
             Gets all text as a string of the current log file.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:iNFT.src.Logger.Log.LogMessage(System.String,System.String)">
+        <member name="M:iNFT.src.Utilities.Log.LogMessage(System.String,System.String)">
             <summary>
             Writes to file from one of the log messages
             </summary>
             <param name="type"></param>
             <param name="message"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.StartLogger">
+        <member name="M:iNFT.src.Utilities.Log.StartLogger">
             <summary>
             Default path/filename file starter
             </summary>
         </member>
-        <member name="M:iNFT.src.Logger.Log.StartLogger(System.String)">
+        <member name="M:iNFT.src.Utilities.Log.StartLogger(System.String)">
             <summary>
             sets custom path but default filename
             </summary>
             <param name="path"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.StartLogger(System.String,System.String)">
+        <member name="M:iNFT.src.Utilities.Log.StartLogger(System.String,System.String)">
             <summary>
             sets custom filename and path
             </summary>
             <param name="path"></param>
             <param name="fileName"></param>
         </member>
-        <member name="M:iNFT.src.Logger.Log.Toggle_Errors">
+        <member name="M:iNFT.src.Utilities.Log.Toggle_Errors">
             <summary>
             Turns off error messages
             </summary>
             <returns></returns>
         </member>
-        <member name="M:iNFT.src.Logger.Log.Toggle_Warnings">
+        <member name="M:iNFT.src.Utilities.Log.Toggle_Warnings">
             <summary>
             Turns off warning message
             </summary>
             <returns></returns>
         </member>
-        <member name="T:iNFT.src.Toaster.Toaster">
+        <member name="T:iNFT.src.Utilities.Toaster">
              <summary>
             Highly modifiable class for generating toast messages
             allows for multiple objects and complete customization
             of the toast object
              </summary>
         </member>
-        <member name="T:iNFT.src.Toaster.Toaster.ToastColors">
+        <member name="T:iNFT.src.Utilities.Toaster.ToastColors">
             <summary>
             Enum for selecting message type 3 different presets
             </summary>
         </member>
-        <member name="F:iNFT.src.Toaster.Toaster.ToastColors.PRIMARY">
+        <member name="F:iNFT.src.Utilities.Toaster.ToastColors.PRIMARY">
             <summary>
             Primary
             Primary
             </summary>
         </member>
-        <member name="F:iNFT.src.Toaster.Toaster.ToastColors.WARNING">
+        <member name="F:iNFT.src.Utilities.Toaster.ToastColors.WARNING">
             <summary>
             Warning
             </summary>
         </member>
-        <member name="F:iNFT.src.Toaster.Toaster.ToastColors.ERROR">
+        <member name="F:iNFT.src.Utilities.Toaster.ToastColors.ERROR">
             <summary>
             Error
             </summary>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.#ctor">
+        <member name="M:iNFT.src.Utilities.Toaster.#ctor">
              <summary>
              Constructor to instatiate a new reuseable toaster message
             multiple Toaster objects can be instantiated as the same time
@@ -427,23 +412,23 @@
             the first
              </summary>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.FlipTextBlockFontBold">
+        <member name="M:iNFT.src.Utilities.Toaster.FlipTextBlockFontBold">
             <summary>
             Toggle Method to change font to Bold
             </summary>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.FlipTextBlockFontItalics">
+        <member name="M:iNFT.src.Utilities.Toaster.FlipTextBlockFontItalics">
             <summary>
             Toggle Method to change font to Italics
             </summary>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.GetToast">
+        <member name="M:iNFT.src.Utilities.Toaster.GetToast">
             <summary>
             Gets the border object for the toast object
             </summary>
             <returns></returns>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.PopToastie(System.String,iNFT.src.Toaster.Toaster.ToastColors,System.Int32)">
+        <member name="M:iNFT.src.Utilities.Toaster.PopToastie(System.String,iNFT.src.Utilities.Toaster.ToastColors,System.Int32)">
             <summary>
             Instantiates the current toast object in the project
             </summary>
@@ -451,25 +436,25 @@
             <param name="tc"></param>
             <param name="seconds"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderCornerRadius(System.Windows.CornerRadius)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderCornerRadius(System.Windows.CornerRadius)">
             <summary>
             Sets Toast border radius
             </summary>
             <param name="borderCornerRadius"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderHeight(System.Int32)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderHeight(System.Int32)">
             <summary>
             Sets Toast message height
             </summary>
             <param name="borderHeight"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderHorizontalAlignment(System.Windows.HorizontalAlignment)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderHorizontalAlignment(System.Windows.HorizontalAlignment)">
             <summary>
             Sets left, right, or center horizontal alignment
             </summary>
             <param name="borderHorizontalAlignment"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderMargin(System.Double,System.Double,System.Double,System.Double)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderMargin(System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Sets Border margin
             </summary>
@@ -478,31 +463,31 @@
             <param name="borderRightMargin"></param>
             <param name="borderBottomMargin"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderThickness(System.Windows.Thickness)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderThickness(System.Windows.Thickness)">
             <summary>
             Sets Border thickeness
             </summary>
             <param name="borderThickness"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderVerticalAlignment(System.Windows.VerticalAlignment)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderVerticalAlignment(System.Windows.VerticalAlignment)">
             <summary>
             Sets up, down, or center vertical alignment
             </summary>
             <param name="borderVerticalAlignment"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderWidth(System.Int32)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderWidth(System.Int32)">
             <summary>
             Sets border width
             </summary>
             <param name="borderWidth"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetBorderXName(System.String)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetBorderXName(System.String)">
             <summary>
             Sets the name of the Toast object for easier manipulation
             </summary>
             <param name="boarderXName"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetErrorColors(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetErrorColors(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)">
             <summary>
             Sets error colors
             </summary>
@@ -510,7 +495,7 @@
             <param name="boarderColor"></param>
             <param name="fontColor"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetPrimaryColors(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetPrimaryColors(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)">
             <summary>
             Set primary colors
             </summary>
@@ -518,25 +503,25 @@
             <param name="boarderColor"></param>
             <param name="fontColor"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockFontFamily(System.String)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockFontFamily(System.String)">
             <summary>
             Sets font type of the toast message
             </summary>
             <param name="textBlockFontFamily"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockFontSize(System.Double)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockFontSize(System.Double)">
             <summary>
             Sets the font size
             </summary>
             <param name="textBlockFontSize"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockMargin(System.Windows.Thickness)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockMargin(System.Windows.Thickness)">
             <summary>
             Sets the Margin of the toast message
             </summary>
             <param name="margin"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockMargin(System.Double,System.Double,System.Double,System.Double)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockMargin(System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Sets the Margin of the toast message with full control of each margin
             </summary>
@@ -545,37 +530,52 @@
             <param name="rightMargin"></param>
             <param name="bottomMargin"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockTextAlignment(System.Windows.TextAlignment)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockTextAlignment(System.Windows.TextAlignment)">
             <summary>
             Sets the alignment of the text in the message
             </summary>
             <param name="textBlockTextAlignment"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockTextWrapping(System.Windows.TextWrapping)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockTextWrapping(System.Windows.TextWrapping)">
             <summary>
             Sets word wrap of the toast message
             </summary>
             <param name="TextWrapping"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockVerticalAlignment(System.Windows.VerticalAlignment)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockVerticalAlignment(System.Windows.VerticalAlignment)">
             <summary>
             Sets the text alignment of the toast message vertically
             </summary>
             <param name="textBlockVerticalAlignment"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetTextBlockXName(System.String)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetTextBlockXName(System.String)">
             <summary>
             Sets the name of the internal text block for easier manipulation
             </summary>
             <param name="textBlockXName"></param>
         </member>
-        <member name="M:iNFT.src.Toaster.Toaster.SetWarningColors(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)">
+        <member name="M:iNFT.src.Utilities.Toaster.SetWarningColors(System.Windows.Media.Color,System.Windows.Media.Color,System.Windows.Media.Color)">
             <summary>
             Sets the warning colors of the toast message
             </summary>
             <param name="backgroundColor"></param>
             <param name="boarderColor"></param>
             <param name="fontColor"></param>
+        </member>
+        <member name="T:iNFT.src.View.MainWindow">
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:iNFT.src.View.MainWindow.#ctor">
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:iNFT.src.View.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
         </member>
     </members>
 </doc>

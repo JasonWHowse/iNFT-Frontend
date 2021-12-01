@@ -1,6 +1,4 @@
-﻿using iNFT.src.helper_functions;
-using iNFT.src.Logger;
-using Nethereum.Hex.HexTypes;
+﻿using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Newtonsoft.Json.Linq;
@@ -10,7 +8,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace iNFT.src {
+namespace iNFT.src.Utilities {
 
     /// <summary>
     /// Class to deploy contracts from abis and bytecode
