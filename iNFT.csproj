@@ -11,8 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="src\Images\Background.png" />
-    <None Remove="TempAccounts.txt" />
   </ItemGroup>
 
   <ItemGroup>
