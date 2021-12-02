@@ -22,7 +22,7 @@ namespace iNFT.src.View {
         /// <summary>
         /// MainWindow
         /// 
-        /// Requirements 7.0.0
+        /// Requirements D7.0.0
         /// </summary>
         public MainWindow() {
             Log.StartLogger();
@@ -187,7 +187,7 @@ namespace iNFT.src.View {
         }
 
         /// <summary>
-        /// Requirements 3.4.2, D7.2.6
+        /// Requirements D3.4.2, D7.2.6
         /// </summary>
         private async void PostFileToIPFS() {
             try {
@@ -221,7 +221,7 @@ namespace iNFT.src.View {
         }
 
         /// <summary>
-        /// Requirements D3.1.2, D3.2.0, D3.2.1, D4.2.0, D4.2.1, 7.2.3
+        /// Requirements D3.1.2, D3.2.0, D3.2.1, D4.2.0, D4.2.1, D7.2.3
         /// </summary>
         private void DisplayImage() {
             try {
