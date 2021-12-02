@@ -4,9 +4,45 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Configurations>Debug;Release;Deployment 64bit;Deployment 32bit</Configurations>
+    <ApplicationIcon>inft64.ico</ApplicationIcon>
+    <Win32Resource />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment 32bit|AnyCPU'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment 32bit|x86'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment 64bit|AnyCPU'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment 64bit|x86'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment 32bit|x64'">
+    <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Deployment 64bit|x64'">
     <DocumentationFile>D:\Jason Howse\Documents\College\Masters Classes\CSC478 - Software Engineering Capstone\Group Project Information and Assignments\iNFT\Front End\iNFT.xml</DocumentationFile>
   </PropertyGroup>
 
@@ -31,6 +67,29 @@
 
   <ItemGroup>
     <Resource Include="src\Images\Background.png" />
+    <Resource Include="src\Images\inft16.png" />
+    <Resource Include="src\Images\inft32.png" />
+    <Resource Include="src\Images\inft48.png" />
+    <Resource Include="src\Images\inft64.png" />
+    <Resource Include="src\Images\inft96.png" />
+    <Resource Include="src\Images\inft128.png" />
+    <Resource Include="src\Images\inft256.png" />
+    <Resource Include="src\Images\inft64.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
