@@ -1,5 +1,4 @@
-﻿using iNFT.src;
-using iNFT.src.Controller;
+﻿using iNFT.src.Controller;
 using iNFT.src.Utilities;
 using Microsoft.Win32;
 using System;
@@ -22,6 +21,8 @@ namespace iNFT.src.View {
 
         /// <summary>
         /// MainWindow
+        /// 
+        /// Requirements 7.0.0
         /// </summary>
         public MainWindow() {
             Log.StartLogger();
@@ -31,10 +32,16 @@ namespace iNFT.src.View {
             this.InitializeLogonWindow();
         }
 
+        /// <summary>
+        /// Requirement D1.0.0
+        /// </summary>
         /*=============================Logon Block================================*/
 
         private decimal userBalance = -1M;
 
+        /// <summary>
+        /// Requirements D7.2.2
+        /// </summary>
         private async void CheckLogin() {
             try {
                 this.userBalance = await this.etherium.CheckUserName(this.UsernamePrivateKeyTextBox.Password);
@@ -44,6 +51,11 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirement D1.2.0, D1.2.1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EnvironmentChanged(object sender, SelectionChangedEventArgs e) {
             if (this.EnvironmentComboBox.SelectedIndex == -1) {
             } else if (this.EnvironmentComboBox.SelectedIndex == 2) {
@@ -54,6 +66,9 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirement D1.1.0, D1.1.1, D1.1.2, D6.4.0
+        /// </summary>
         private void InitializeLogonWindow() {
             this.FilePathTextBox.Text = this.FileNameTextBox.Text = "";
             this.FileNameTextBox.Visibility = Visibility.Hidden;
@@ -84,6 +99,11 @@ namespace iNFT.src.View {
             this.NFTComboBox.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Requirement D1.2.5, D1.3.0, D1.3.1, D1.3.2, D1.3.3, D1.4.0, D1.4.1, D1.4.2, D1.4.3, D1.4.4, D7.2.1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Login_Click(object sender, RoutedEventArgs e) {
             if (this.UsernamePrivateKeyTextBox.Password.Length > 1 && this.UsernamePrivateKeyTextBox.Password.ToLower()[1] == 'x') {
                 this.UsernamePrivateKeyTextBox.Password = this.UsernamePrivateKeyTextBox.Password.ToLower().Split("x")[1];
@@ -124,6 +144,9 @@ namespace iNFT.src.View {
 
         /*=============================Logon Block================================*/
 
+        /// <summary>
+        /// D5.0.0
+        /// </summary>
         /*==========================Transfer Block================================*/
 
         private void InitializeTransferWindow() {//TODO: Implement if time permits
@@ -131,23 +154,14 @@ namespace iNFT.src.View {
         }
 
         private void Transfer_Button_Click(object sender, RoutedEventArgs e) {
-            throw new NotImplementedException();//TODO: Implement if time permits
-            this.FilePathTextBox.Text = "";
-            this.FilePathTextBox.Visibility = Visibility.Hidden;
-            this.CopytoClipboardButton.Visibility = Visibility.Hidden;
-            //this.TransferButton.Visibility = Visibility.Hidden;
-            if (false /*aTODO: Delete false UPDATE: !IsInBlockchain(this.NFTComboBox.SelectedItem)*/ ) {
-                this.toast.PopToastie("NFT does not exist", ToastColors.ERROR, 5);
-            } else {
-                //aTODO: Transfer stuff
-                this.NFTComboBox.SelectedIndex = -1;
-                this.toast.PopToastie("NFT Successfully Transfered", ToastColors.PRIMARY, 5);
-            }
-            //aTODO: UPDATE: this.NFTComboBox.ItemsSource = GetBlockChainList();
+            throw new NotImplementedException();
         }
 
         /*==========================Transfer Block================================*/
 
+        /// <summary>
+        /// Requirements D2.0.0, D3.0.0, D4.0.0, D6.0.0
+        /// </summary>
         /*==============================Main Block================================*/
 
         private readonly IPFS_Interact IPFS = new IPFS_Interact();
@@ -160,6 +174,9 @@ namespace iNFT.src.View {
             this.nftList = await this.etherium.TokenList();
         }
 
+        /// <summary>
+        /// Requirements D7.2.7
+        /// </summary>
         private async void Mint() {
             try {
                 this.hasMinted = await this.etherium.Mint(this.IPFS_Hash);
@@ -169,6 +186,9 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements 3.4.2, D7.2.6
+        /// </summary>
         private async void PostFileToIPFS() {
             try {
                 this.IPFS_Hash = await this.IPFS.SetFileToIPFS(this.filePath);
@@ -178,6 +198,9 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements D7.2.5
+        /// </summary>
         private async void SetFileName() {
             try {
                 this.filePath = await this.IPFS.GetIPFSFile(this.filePath) ? this.IPFS.FileName : "false";
@@ -187,11 +210,19 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements D3.1.0, D3.1.2
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BrowseButton_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog fileName = new OpenFileDialog();
             this.FileNameTextBox.Text = (fileName.ShowDialog() == true) ? fileName.FileName : "";
         }
 
+        /// <summary>
+        /// Requirements D3.1.2, D3.2.0, D3.2.1, D4.2.0, D4.2.1, 7.2.3
+        /// </summary>
         private void DisplayImage() {
             try {
                 this.ImageNFTDisplay.Visibility = Visibility.Visible;
@@ -208,6 +239,9 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements D3.1.2, D3.3.0, D3.3.1, D4.3.0, D4.3.1, D7.2.4
+        /// </summary>
         private void DisplayText() {
             try {
                 this.ImageNFTDisplay.Visibility = Visibility.Hidden;
@@ -218,6 +252,11 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements D3.1.0, D3.1.1, D3.1.2
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileNameTextBox_TextChanged(object sender, TextChangedEventArgs e) {
             this.NFTComboBox.SelectedIndex = -1;
             this.MintButton.Visibility = this.FileNameTextBox.Text.Length > 0 ? Visibility.Visible : Visibility.Hidden;
@@ -239,6 +278,9 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements D1.5.0, D1.5.1, D1.5.2, D1.6.0
+        /// </summary>
         private void InitializeMainWindow() {
             this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
             this.UsernamePrivateKeyTextBox.Visibility = Visibility.Hidden;
@@ -266,11 +308,21 @@ namespace iNFT.src.View {
             Application.Current.MainWindow.MaxHeight = 450;
         }
 
+        /// <summary>
+        /// Requirements D6.0.0
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Logout_Button_Click(object sender, RoutedEventArgs e) {
             this.etherium.Logout();
             this.InitializeLogonWindow();
         }
 
+        /// <summary>
+        /// Requirements D3.4.0, D3.4.1, D3.4.2, D3.4.3, D3.4.4, D3.4.5, D3.4.6, D7.1.1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Mint_Button_Click(object sender, RoutedEventArgs e) {
             this.hasMinted = null;
             this.filePath = this.FileNameTextBox.Text;
@@ -304,6 +356,12 @@ namespace iNFT.src.View {
             }
         }
 
+
+        /// <summary>
+        /// Requirements D4.0.0, D4.1.0
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NFTComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (this.NFTComboBox.SelectedIndex == -1) {
                 this.filePath = this.FilePathTextBox.Text = "";
@@ -339,6 +397,9 @@ namespace iNFT.src.View {
             }
         }
 
+        /// <summary>
+        /// Requirements D2.2.0, D3.4.7
+        /// </summary>
         private void SetNFTComboBox() {
             this.nftList = null;
             if (etherium.AccountIsNull()) {

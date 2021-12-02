@@ -10,6 +10,8 @@ namespace iNFT.src.Utilities {
     public class Helpers {
         /// <summary>
         /// Attemps to get a manipulatable JObject from a json file, full path accepted
+        /// 
+        /// Requirement D7.4.1
         /// </summary>
         /// <param name="fileNamepath"></param>
         /// <returns></returns>
