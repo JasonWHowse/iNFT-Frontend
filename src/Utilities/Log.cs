@@ -29,6 +29,8 @@ namespace iNFT.src.Utilities {
 
         /// <summary>
         /// Generates Info log entry on the log file.
+        /// 
+        /// Requirements D7.1.0
         /// </summary>
         /// <param name="message"></param>
         public static void InfoLog(object message) {
@@ -37,6 +39,8 @@ namespace iNFT.src.Utilities {
 
         /// <summary>
         /// Generates Info log entry on the log file.
+        /// 
+        /// Requirements D7.1.0
         /// </summary>
         /// <param name="message"></param>
         public static void InfoLog(string message) {
@@ -65,6 +69,8 @@ namespace iNFT.src.Utilities {
 
         /// <summary>
         /// Generates Error log entry on the log file.
+        /// 
+        /// Requirements D7.2.0, D7.3.0, D7.4.0, D7.5.0
         /// </summary>
         /// <param name="e"></param>
         public static void ErrorLog(Exception e) {
@@ -132,6 +138,8 @@ namespace iNFT.src.Utilities {
 
         /// <summary>
         /// Default path/filename file starter
+        /// 
+        /// Requirements D7.0.0
         /// </summary>
         public static void StartLogger() {
             _fileName = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\log.log";

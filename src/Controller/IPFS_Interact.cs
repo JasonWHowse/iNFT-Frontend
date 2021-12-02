@@ -20,11 +20,15 @@ namespace iNFT.src.Controller {
 
         /// <summary>
         /// Approved Image file types
+        /// 
+        /// Requirement D3.2.1
         /// </summary>
         public static readonly HashSet<string> Image_File_Types = new HashSet<string> { "webp", "jpeg", "png", "gif", "jpg" };
 
         /// <summary>
         /// Approved Raw Text file types
+        /// 
+        /// Requirement D3.3.1
         /// </summary>
         public static readonly HashSet<string> Text_File_Types = new HashSet<string> { "txt", "html", "xml", "css", "js", "htm", "json" };
 
@@ -80,6 +84,8 @@ namespace iNFT.src.Controller {
 
         /// <summary>
         /// Deletes all local storage files
+        /// 
+        /// Requirements D7.5.4
         /// </summary>
         public void DeleteFile() {
             string[] files = Directory.GetFiles(this.storePath);
@@ -96,6 +102,8 @@ namespace iNFT.src.Controller {
 
         /// <summary>
         /// Gets an IPFS file and stores it locally
+        /// 
+        /// Requirements D4.1.0, D4.1.1, D4.1.2, D7.5.3, D7.5.4
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -123,13 +131,14 @@ namespace iNFT.src.Controller {
 
         /// <summary>
         /// Posts a file to IPFS
+        /// 
+        /// Requirements D7.5.3
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         public async Task<string> SetFileToIPFS(string path) {
             try {
-                string output = (await this.gateway.FileSystem.AddFileAsync(path)).Id.ToString();
-                return output;
+                return (await this.gateway.FileSystem.AddFileAsync(path)).Id.ToString();
             } catch (Exception e) {
                 Log.ErrorLog(e);
                 return "";

@@ -70,6 +70,8 @@ namespace iNFT.src {
 
         /// <summary>
         /// Initializes the web3 contracts for each environment
+        /// 
+        /// Requirements D7.3.1, D7.3.2, D7.3.3
         /// </summary>
         public Ethereum_Interact() {
             try {
@@ -91,6 +93,8 @@ namespace iNFT.src {
 
         /// <summary>
         /// Constructor that sets the environment variables
+        /// 
+        /// Requirement D1.2.2, D1.2.3, D1.2.4
         /// </summary>
         /// <param name="env"></param>
         public Ethereum_Interact(Crypto env) : this() {
@@ -98,6 +102,8 @@ namespace iNFT.src {
         }
         /// <summary>
         /// Returns a boolean based on whether or not the Address has a Token at a particular index
+        /// 
+        /// Requirements D7.3.4
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -110,8 +116,11 @@ namespace iNFT.src {
                 return false;
             }
         }
-                /// <summary>
+
+        /// <summary>
         /// Attempts to post a token to the block chain network and returns true if its successful
+        /// 
+        /// Requirements D7.1.2, D7.3.5
         /// </summary>
         /// <param name="hash"></param>
         /// <returns></returns>
@@ -198,7 +207,9 @@ namespace iNFT.src {
         }
 
         /// <summary>
-        /// logs user out by destroying environments
+        /// Logs user out by destroying environments
+        /// 
+        /// Requirements D6.1.0, D6.2.0, D6.3.0
         /// </summary>
         public void Logout() {
             this.account = null;
@@ -208,6 +219,8 @@ namespace iNFT.src {
 
         /// <summary>
         /// Sets the environment variables based on locat, Ropsten, Main_Net
+        /// 
+        /// Requirement D1.2.6
         /// </summary>
         /// <param name="env"></param>
         public void SetEnvironment(Crypto env) {
