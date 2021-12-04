@@ -22,7 +22,7 @@ namespace iNFT.src.View {
         /// <summary>
         /// MainWindow
         /// 
-        /// Requirements 7.0.0
+        /// Requirements D7.0.0
         /// </summary>
         public MainWindow() {
             Log.StartLogger();
@@ -187,7 +187,7 @@ namespace iNFT.src.View {
         }
 
         /// <summary>
-        /// Requirements 3.4.2, D7.2.6
+        /// Requirements D3.4.2, D7.2.6
         /// </summary>
         private async void PostFileToIPFS() {
             try {
@@ -221,7 +221,7 @@ namespace iNFT.src.View {
         }
 
         /// <summary>
-        /// Requirements D3.1.2, D3.2.0, D3.2.1, D4.2.0, D4.2.1, 7.2.3
+        /// Requirements D3.1.2, D3.2.0, D3.2.1, D4.2.0, D4.2.1, D7.2.3
         /// </summary>
         private void DisplayImage() {
             try {
@@ -279,7 +279,7 @@ namespace iNFT.src.View {
         }
 
         /// <summary>
-        /// Requirements D1.5.0, D1.5.1, D1.5.2, D1.6.0
+        /// Requirements D2.1.0, D2.1.1, D2.1.2, D2.2.0
         /// </summary>
         private void InitializeMainWindow() {
             this.UserNamePrivateKeyLabel.Visibility = Visibility.Hidden;
@@ -358,7 +358,7 @@ namespace iNFT.src.View {
 
 
         /// <summary>
-        /// Requirements D4.0.0, D4.1.0
+        /// Requirements D4.0.0, D4.1.0, D4.4.0
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -414,6 +414,11 @@ namespace iNFT.src.View {
             this.NFTComboBox.IsEnabled = true;
         }
 
+        /// <summary>
+        /// Requirements D4.5.0
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Copy_to_Clipboard_Click(object sender, RoutedEventArgs e) {
             Clipboard.SetText(this.filePath);
         }

@@ -100,6 +100,7 @@ namespace iNFT.src {
         public Ethereum_Interact(Crypto env) : this() {
             this.SetEnvironment(env);
         }
+
         /// <summary>
         /// Returns a boolean based on whether or not the Address has a Token at a particular index
         /// 

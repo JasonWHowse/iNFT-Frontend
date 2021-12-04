@@ -103,7 +103,7 @@ namespace iNFT.src.Controller {
         /// <summary>
         /// Gets an IPFS file and stores it locally
         /// 
-        /// Requirements D4.1.0, D4.1.1, D4.1.2, D7.5.3, D7.5.4
+        /// Requirements D4.1.0, D4.1.1, D4.1.2, D7.5.1, D7.5.2
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
